@@ -1,6 +1,6 @@
 # spray
 
-A new Flutter project.
+A mobile app that gives users the ability to "spray" money on other users.
 
 ## Getting Started
 
