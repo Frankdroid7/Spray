@@ -35,6 +35,7 @@ dependencies:
   http: ^1.6.0
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^3.2.0
+  auto_route: ^11.1.0
 
 
 dev_dependencies:
@@ -42,6 +43,8 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  auto_route_generator: ^10.4.0
+  build_runner: ^2.10.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
