@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spray/theme/app_theme.dart';
 
 import 'router/app_router.dart';
 
@@ -16,9 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Spray',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: AppTheme.light,
       routerConfig: _appRouter.config(),
     );
   }
