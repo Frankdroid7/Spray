@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Spray',
       theme: AppTheme.light,
+      debugShowCheckedModeBanner: false,
       routerConfig: _appRouter.config(),
     );
   }

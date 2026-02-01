@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTextStyles {
   /* ---------------- Brand ---------------- */
 
   /// App wordmark / hero text (Splash, Branding)
-  static const brandDisplay = TextStyle(
-    fontFamily: 'SpaceGrotesk',
+  static final TextStyle brandDisplay = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.w500,
     fontSize: 57.01,
     height: 1.0,
@@ -15,8 +15,7 @@ class AppTextStyles {
   );
 
   /// Brand text on light background (Onboarding)
-  static const brandDisplayDark = TextStyle(
-    fontFamily: 'SpaceGrotesk',
+  static TextStyle brandDisplayDark = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.w500,
     fontSize: 57.01,
     height: 1.0,
@@ -27,8 +26,7 @@ class AppTextStyles {
   /* ---------------- Primary (Inter Tight) ---------------- */
 
   /// Large numeric values, balances, emphasis numbers
-  static const primaryDisplay = TextStyle(
-    fontFamily: 'InterTight',
+  static final TextStyle primaryDisplay = GoogleFonts.interTight(
     fontWeight: FontWeight.w500,
     fontSize: 32,
     height: 1.0,
@@ -37,8 +35,7 @@ class AppTextStyles {
   );
 
   /// Section headers, card titles
-  static const primaryTitle = TextStyle(
-    fontFamily: 'InterTight',
+  static final TextStyle primaryTitle = GoogleFonts.interTight(
     fontWeight: FontWeight.w600,
     fontSize: 16,
     height: 1.0,
@@ -47,8 +44,7 @@ class AppTextStyles {
   );
 
   /// Page titles, auth headers
-  static const primaryHeading = TextStyle(
-    fontFamily: 'InterTight',
+  static final TextStyle primaryHeading = GoogleFonts.interTight(
     fontWeight: FontWeight.w700,
     fontSize: 18,
     height: 1.0,
@@ -57,8 +53,7 @@ class AppTextStyles {
   );
 
   /// Standard readable body text
-  static const primaryBody = TextStyle(
-    fontFamily: 'InterTight',
+  static final TextStyle primaryBody = GoogleFonts.interTight(
     fontWeight: FontWeight.w400,
     fontSize: 18,
     height: 1.0,
@@ -66,8 +61,7 @@ class AppTextStyles {
   );
 
   /// Interactive text (links, inline actions)
-  static const primaryAction = TextStyle(
-    fontFamily: 'InterTight',
+  static final TextStyle primaryAction = GoogleFonts.interTight(
     fontWeight: FontWeight.w500,
     fontSize: 14,
     height: 1.0,
@@ -75,8 +69,7 @@ class AppTextStyles {
   );
 
   /// Muted labels / helper text
-  static const primaryLabel = TextStyle(
-    fontFamily: 'InterTight',
+  static final TextStyle primaryLabel = GoogleFonts.interTight(
     fontWeight: FontWeight.w500,
     fontSize: 12,
     height: 1.0,
@@ -86,8 +79,8 @@ class AppTextStyles {
   /* ---------------- System (SF Pro Display) ---------------- */
 
   /// Form field labels
-  static const systemLabel = TextStyle(
-    fontFamily: 'SFProDisplay',
+  static final TextStyle systemLabel = GoogleFonts.outfit(
+    // fontFamily: 'SFProDisplay',
     fontWeight: FontWeight.w500,
     fontSize: 12,
     height: 1.0,
@@ -95,8 +88,8 @@ class AppTextStyles {
   );
 
   /// Input placeholders
-  static const systemPlaceholder = TextStyle(
-    fontFamily: 'SFProDisplay',
+  static final TextStyle systemPlaceholder = GoogleFonts.outfit(
+    // fontFamily: 'SFProDisplay',
     fontWeight: FontWeight.w400,
     fontSize: 12,
     height: 1.0,
@@ -104,8 +97,8 @@ class AppTextStyles {
   );
 
   /// Secondary actions (forgot password, subtle CTAs)
-  static const systemBody = TextStyle(
-    fontFamily: 'SFProDisplay',
+  static final TextStyle systemBody = GoogleFonts.outfit(
+    // fontFamily: 'SFProDisplay',
     fontWeight: FontWeight.w500,
     fontSize: 14,
     height: 1.0,
@@ -115,8 +108,7 @@ class AppTextStyles {
   /* ---------------- Micro ---------------- */
 
   /// Very small supporting text (action card subtitles)
-  static const micro = TextStyle(
-    fontFamily: 'InterDisplay',
+  static final TextStyle micro = GoogleFonts.inter(
     fontWeight: FontWeight.w500,
     fontSize: 10,
     height: 1.0,
@@ -127,8 +119,7 @@ class AppTextStyles {
   /* ---------------- Inverted ---------------- */
 
   /// Text on dark / primary backgrounds (buttons)
-  static const onPrimary = TextStyle(
-    fontFamily: 'InterTight',
+  static final TextStyle onPrimary = GoogleFonts.interTight(
     fontWeight: FontWeight.w500,
     fontSize: 14,
     height: 1.0,

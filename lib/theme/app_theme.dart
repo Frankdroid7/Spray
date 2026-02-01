@@ -7,7 +7,7 @@ class AppTheme {
     useMaterial3: true,
     scaffoldBackgroundColor: AppColors.surfaceBackground,
 
-    textTheme: const TextTheme(
+    textTheme:  TextTheme(
       displayLarge: AppTextStyles.brandDisplay,
       titleLarge: AppTextStyles.primaryHeading,
       titleMedium: AppTextStyles.primaryTitle,
@@ -18,7 +18,7 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: AppColors.brandPrimary,
       onPrimary: AppColors.textOnPrimary,
-      background: AppColors.surfaceBackground,
+      surface: AppColors.surfaceBackground,
     ),
   );
 }
