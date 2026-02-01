@@ -6,7 +6,7 @@ class AppTextStyles {
   /* ---------------- Brand ---------------- */
 
   /// App wordmark / hero text (Splash, Branding)
-  static final TextStyle brandDisplay = GoogleFonts.spaceGrotesk(
+  static TextStyle brandDisplay = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.w500,
     fontSize: 57.01,
     height: 1.0,
@@ -17,9 +17,9 @@ class AppTextStyles {
   /// Brand text on light background (Onboarding)
   static TextStyle brandDisplayDark = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.w500,
-    fontSize: 57.01,
+    fontSize: 44,
     height: 1.0,
-    letterSpacing: -5.7,
+    letterSpacing: -4.4,
     color: AppColors.textDark,
   );
 
@@ -66,6 +66,7 @@ class AppTextStyles {
     fontSize: 14,
     height: 1.0,
     color: AppColors.brandDark,
+    letterSpacing: -0.3,
   );
 
   /// Muted labels / helper text

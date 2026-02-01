@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:spray/core/app_extensions.dart';
+import 'package:flutter/services.dart';
+import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/router/app_router.dart';
 import 'package:spray/theme/app_colors.dart';
 
@@ -32,7 +33,13 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    _runAnimation();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _runAnimation());
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   Future<void> _runAnimation() async {
@@ -45,12 +52,15 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.brandPrimary,
-      body: Center(
-        child: FadeTransition(
-          opacity: animation,
-          child: Text('Spraypay', style: context.textTheme.displayLarge),
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: AppColors.brandPrimary,
+        body: Center(
+          child: FadeTransition(
+            opacity: animation,
+            child: Text('Spraypay', style: context.textTheme.displayLarge),
+          ),
         ),
       ),
     );
