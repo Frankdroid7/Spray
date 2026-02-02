@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/router/app_router.dart';
+import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
 
 @RoutePage()
@@ -47,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen>
     await controller.reverse();
     if (!mounted) return;
 
-    context.router.replacePath(Paths.onboarding);
+    context.router.replace(OnboardingRoute());
   }
 
   @override

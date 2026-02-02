@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
-import 'package:spray/core/widgets/app_button.dart';
+import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/core/widgets/back_button.dart';
 import 'package:spray/core/widgets/custom_textfield.dart';
 import 'package:spray/features/authentication/presentation/widgets/apple_button.dart';

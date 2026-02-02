@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/features/authentication/presentation/widgets/apple_button.dart';
 import 'package:spray/features/authentication/presentation/widgets/google_button.dart';
-import 'package:spray/router/app_router.dart';
+import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
 
 @RoutePage()
@@ -59,14 +59,13 @@ class OnboardingScreen extends StatelessWidget {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.router.pushPath(Paths.login);
+                          context.router.push(LoginRoute());
                         },
                     ),
                   ],
                 ),
                 style: context.textTheme.labelSmall?.copyWith(
                   color: AppColors.textSecondary,
-
                 ),
               ),
               const SizedBox(height: 16),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
-import 'package:spray/core/widgets/app_button.dart';
+import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/theme/app_colors.dart';
 
 class GoogleButton extends StatelessWidget {
