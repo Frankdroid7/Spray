@@ -44,4 +44,10 @@ class AppColors {
 
   /// Subtle neutral border
   static const borderLight = Color(0xFFE1E3E7);
+
+
+  /* ---------------- Card ---------------- */
+
+  /// Card background
+  static const cardBackground = Color(0xFFEEF0F2);
 }
