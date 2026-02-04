@@ -29,7 +29,7 @@ class AppColors {
   /* ---------------- Surface / Background ---------------- */
 
   /// App main background
-  static const surfaceBackground = Color(0xFFFFFFFF);
+  static const surfaceBackground = Color(0xFFF7F8F8);
 
   /// Dark surface (Google button)
   static const surfaceDark = Color(0xFF1F1F1E);
@@ -50,4 +50,7 @@ class AppColors {
 
   /// Card background
   static const cardBackground = Color(0xFFEEF0F2);
+
+
+  static const error = Color(0xFFFA4242);
 }

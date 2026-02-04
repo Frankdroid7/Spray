@@ -10,6 +10,7 @@ class AppTheme {
     textTheme:  TextTheme(
       displayLarge: AppTextStyles.brandDisplay,
       displayMedium: AppTextStyles.brandDisplayDark,
+      displaySmall: AppTextStyles.primaryDisplay,
       titleLarge: AppTextStyles.primaryHeading,
       titleMedium: AppTextStyles.primaryTitle,
       bodyMedium: AppTextStyles.primaryBody,
