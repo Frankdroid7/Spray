@@ -1,23 +1,27 @@
 import 'package:animated_switcher_plus/animated_switcher_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
+import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/theme/app_colors.dart';
 import 'package:spray/theme/app_text_styles.dart';
 
-class AmountContainer extends StatefulWidget {
+class AmountContainer extends ConsumerStatefulWidget {
   const AmountContainer({super.key});
 
   @override
-  State<AmountContainer> createState() => _AmountContainerState();
+  ConsumerState<AmountContainer> createState() => _AmountContainerState();
 }
 
-class _AmountContainerState extends State<AmountContainer> {
+class _AmountContainerState extends ConsumerState<AmountContainer> {
   bool visible = false;
 
   @override
   Widget build(BuildContext context) {
+    double amount = ref.watch(homeProvider.select((h) => h.balance));
+
     return Container(
       height: 200,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -63,6 +67,7 @@ class _AmountContainerState extends State<AmountContainer> {
                 "₦",
                 style: context.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: Colors.black,
                 ),
               ),
               if (visible)
@@ -77,6 +82,7 @@ class _AmountContainerState extends State<AmountContainer> {
                     ],
                     style: context.textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
                   ),
                 )
@@ -109,14 +115,14 @@ class _AmountContainerState extends State<AmountContainer> {
               _Action(
                 title: "Withdraw",
                 background: AppColors.cardBackground,
-                text: AppColors.textPrimary,
+                text: Colors.black,
                 icon: IconsaxPlusLinear.arrow_up,
                 onTap: () {},
               ),
               _Action(
                 title: "History",
                 background: AppColors.cardBackground,
-                text: AppColors.textPrimary,
+                text: Colors.black,
                 icon: IconsaxPlusLinear.arrow_2,
                 onTap: () {},
               ),
@@ -165,7 +171,7 @@ class _Action extends StatelessWidget {
         Text(
           title,
           style: context.textTheme.labelSmall?.copyWith(
-            color: AppColors.textPrimary,
+            color: Colors.black,
           ),
         ),
       ],

@@ -30,6 +30,8 @@ dependencies:
   iconsax_plus: ^1.0.0
   intl: ^0.20.1
 
+  lucide_icons_flutter:
+
 
 dev_dependencies:
   flutter_test:
