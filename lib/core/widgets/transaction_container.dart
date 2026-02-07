@@ -23,14 +23,14 @@ class TransactionContainer extends StatelessWidget {
     };
 
     Color color = switch (transaction.type) {
-      TransactionType.credit => const Color(0xFF149D4F),
-      TransactionType.fund => const Color(0xFF149D4F),
-      TransactionType.debit => const Color(0xFFFA4242),
+      TransactionType.credit => AppColors.coreActionSubtitleGreen,
+      TransactionType.fund => AppColors.coreActionSubtitleGreen,
+      TransactionType.debit => AppColors.error,
     };
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: const Color(0xFFEEF0F2))),
+        border: Border(bottom: BorderSide(color: AppColors.borderMedium)),
       ),
       child: SizedBox(
         width: double.infinity,
@@ -43,7 +43,7 @@ class TransactionContainer extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9FAFB),
+                  color: AppColors.cardSurface,
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
@@ -65,7 +65,7 @@ class TransactionContainer extends StatelessWidget {
                   Text(
                     _formatter.format(DateTime.parse(transaction.timestamp),),
                     style: context.textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF9D9FAF),
+                      color: AppColors.textTertiary,
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
                     ),

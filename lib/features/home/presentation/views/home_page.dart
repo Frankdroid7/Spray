@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
-import 'package:spray/features/home/presentation/widgets/amount_container.dart';
+import 'package:spray/features/home/presentation/widgets/wallet_container.dart';
 import 'package:spray/features/home/presentation/widgets/core_actions.dart';
 import 'package:spray/features/home/presentation/widgets/recent_transactions.dart';
 import 'package:spray/theme/app_colors.dart';
@@ -68,7 +68,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AmountContainer(),
+              WalletContainer(),
               SizedBox(height: 24),
               CoreActions(),
               SizedBox(height: 24),

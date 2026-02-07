@@ -8,14 +8,14 @@ import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/theme/app_colors.dart';
 import 'package:spray/theme/app_text_styles.dart';
 
-class AmountContainer extends ConsumerStatefulWidget {
-  const AmountContainer({super.key});
+class WalletContainer extends ConsumerStatefulWidget {
+  const WalletContainer({super.key});
 
   @override
-  ConsumerState<AmountContainer> createState() => _AmountContainerState();
+  ConsumerState<WalletContainer> createState() => _WalletContainerState();
 }
 
-class _AmountContainerState extends ConsumerState<AmountContainer> {
+class _WalletContainerState extends ConsumerState<WalletContainer> {
   bool visible = false;
 
   @override

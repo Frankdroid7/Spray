@@ -13,8 +13,8 @@ class CoreActions extends StatelessWidget {
         Expanded(
           child: _Action(
             backgroundColor: AppColors.surfaceAccentBlue,
-            titleColor: const Color(0xFF0440A8),
-            subtitleColor: const Color(0xFF035CF7),
+            titleColor: AppColors.coreActionTitleBlue,
+            subtitleColor: AppColors.coreActionSubtitleBlue,
             subtitle: "Send Money",
             title: "Spray Someone",
             image: "💸",
@@ -24,8 +24,8 @@ class CoreActions extends StatelessWidget {
         Expanded(
           child: _Action(
             backgroundColor: AppColors.surfaceAccentGreen,
-            titleColor: const Color(0xFF096430),
-            subtitleColor: const Color(0xFF149D4F),
+            titleColor: AppColors.coreActionTitleGreen,
+            subtitleColor: AppColors.coreActionSubtitleGreen,
             subtitle: "Receive Money",
             title: "Get Sprayed",
             image: "🎁",

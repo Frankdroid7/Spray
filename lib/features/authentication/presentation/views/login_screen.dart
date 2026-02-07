@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _goHome() {
-    context.router.replace(const HomeRoute());
+    context.router.replaceAll(const [HomeRoute()]);
   }
 
   @override
