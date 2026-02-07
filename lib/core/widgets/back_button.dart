@@ -12,17 +12,23 @@ class CustomBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.router.pop(),
-      child: Container(
-        width: 32,
+      child: SizedBox(
+        width: 48,
         height: 32,
-        decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Icon(
-          Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
-          color: AppColors.surfaceDark,
+        child: Center(
+          child: Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
+              color: AppColors.surfaceDark,
+            ),
+          ),
         ),
       ),
     );

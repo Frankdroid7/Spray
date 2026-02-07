@@ -126,4 +126,13 @@ class AppTextStyles {
     height: 1.0,
     color: AppColors.textOnPrimary,
   );
+
+
+  static final TextStyle naira = GoogleFonts.libreFranklin(
+    fontWeight: FontWeight.w600,
+    fontSize: 32,
+    height: 1.0,
+    letterSpacing: -0.03,
+    color: const Color(0xFF020202),
+  );
 }

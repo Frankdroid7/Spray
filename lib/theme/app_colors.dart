@@ -17,6 +17,8 @@ class AppColors {
   /// Secondary / muted text
   static const textSecondary = Color(0xFF676B80);
 
+  static const textTertiary = Color(0xFF9D9FAF);
+
   /// Inverted text (on dark / primary backgrounds)
   static const textOnPrimary = Color(0xFFFEFFFF);
 
@@ -29,7 +31,7 @@ class AppColors {
   /* ---------------- Surface / Background ---------------- */
 
   /// App main background
-  static const surfaceBackground = Color(0xFFFFFFFF);
+  static const surfaceBackground = Color(0xFFF7F8F8);
 
   /// Dark surface (Google button)
   static const surfaceDark = Color(0xFF1F1F1E);
@@ -45,9 +47,29 @@ class AppColors {
   /// Subtle neutral border
   static const borderLight = Color(0xFFE1E3E7);
 
+  static const borderMedium = Color(0xFFEEF0F2);
+
 
   /* ---------------- Card ---------------- */
 
   /// Card background
   static const cardBackground = Color(0xFFEEF0F2);
+
+  static const cardSurface = Color(0xFFF9FAFB);
+
+
+  static const error = Color(0xFFFA4242);
+
+
+
+
+
+  static const coreActionTitleBlue = Color(0xFF0440A8);
+
+  static const coreActionSubtitleBlue = Color(0xFF035CF7);
+
+  static const coreActionTitleGreen = Color(0xFF096430);
+
+  static const coreActionSubtitleGreen = Color(0xFF149D4F);
+
 }

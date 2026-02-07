@@ -7,6 +7,7 @@ import 'package:spray/core/widgets/back_button.dart';
 import 'package:spray/core/widgets/custom_textfield.dart';
 import 'package:spray/features/authentication/presentation/widgets/apple_button.dart';
 import 'package:spray/features/authentication/presentation/widgets/google_button.dart';
+import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
 
 @RoutePage()
@@ -28,12 +29,16 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _goHome() {
+    context.router.replaceAll(const [HomeRoute()]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        appBar: AppBar(leading: const CustomBackButton(), leadingWidth: 40),
+        appBar: AppBar(leading: const CustomBackButton()),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsetsGeometry.symmetric(horizontal: 16),
@@ -41,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 8),
                   Text(
                     "Continue with your account",
                     style: context.textTheme.titleLarge?.copyWith(
@@ -110,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                   const AppleButton(),
                   const SizedBox(height: 40),
-                  PrimaryButton(onPressed: () {}, text: "Log in"),
+                  PrimaryButton(onPressed: _goHome, text: "Log in"),
                   const SizedBox(height: 24),
                   Center(
                     child: Text.rich(
