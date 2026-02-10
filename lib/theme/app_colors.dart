@@ -59,12 +59,9 @@ class AppColors {
 
   static const cardSurface = Color(0xFFF9FAFB);
 
-
   static const error = Color(0xFFFA4242);
 
-
-
-
+  static const iconDark = Color(0xFF292D32);
 
   static const coreActionTitleBlue = Color(0xFF0440A8);
 

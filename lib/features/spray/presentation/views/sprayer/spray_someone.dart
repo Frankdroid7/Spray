@@ -5,10 +5,12 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
+import 'package:spray/core/functions/focus.dart';
 import 'package:spray/core/widgets/back_button.dart';
 import 'package:spray/core/widgets/custom_textfield.dart';
 import 'package:spray/features/spray/domain/entities/spray_receiver.dart';
 import 'package:spray/features/spray/presentation/providers/search_receiver_provider.dart';
+import 'package:spray/features/spray/presentation/widgets/preview_spray_receiver_info.dart';
 import 'package:spray/features/spray/presentation/widgets/spray_receiver_container.dart';
 import 'package:spray/theme/app_colors.dart';
 
@@ -27,6 +29,10 @@ class _SpraySomeonePageState extends ConsumerState<SpraySomeonePage> {
   void initState() {
     super.initState();
     controller.addListener(_searchUser);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchReceiversProvider.notifier).search('');
+    });
   }
 
   @override
@@ -43,10 +49,15 @@ class _SpraySomeonePageState extends ConsumerState<SpraySomeonePage> {
   @override
   Widget build(BuildContext context) {
     bool loading = ref.watch(searchReceiversProvider.select((u) => u.loading));
-    List<SprayReceiver> receivers = ref.watch(searchReceiversProvider.select((u) => u.receivers));
+    List<SprayReceiver> receivers = ref.watch(
+      searchReceiversProvider.select((u) => u.receivers),
+    );
+    int selectedIndex = ref.watch(
+      searchReceiversProvider.select((u) => u.selectedReceiverIndex),
+    );
 
     return GestureDetector(
-      onTap: () => Focus.of(context).unfocus(),
+      onTap: unFocus,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -92,28 +103,48 @@ class _SpraySomeonePageState extends ConsumerState<SpraySomeonePage> {
                 decoration: BoxDecoration(
                   color: AppColors.surfaceBackgroundLighter,
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Skeletonizer(
-                  enabled: loading,
-                  child: ListView.separated(
-                    itemBuilder: (_, index) {
-                      SprayReceiver receiver = receivers[index];
-
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 350),
-                        child: SlideAnimation(
-                          verticalOffset: index % 2 == 0 ? 20 : -20,
-                          child: FadeInAnimation(
-                            child: SprayReceiverContainer(receiver: receiver),
-                          ),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (_, _) => const SizedBox(height: 16),
-                    itemCount: receivers.length,
-                  ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
                 ),
+                child: selectedIndex != -1 && !loading
+                    ? PreviewSprayReceiverInfo(
+                        receiver: receivers[selectedIndex],
+                      )
+                    : Skeletonizer(
+                        enabled: loading,
+                        child: ListView.separated(
+                          itemBuilder: (_, index) {
+                            SprayReceiver receiver = receivers[index];
+                            bool selected = selectedIndex == index;
+
+                            return AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 350),
+                              child: SlideAnimation(
+                                verticalOffset: index % 2 == 0 ? 20 : -20,
+                                child: FadeInAnimation(
+                                  child: SprayReceiverContainer(
+                                    receiver: receiver,
+                                    selected: selected,
+                                    onSelect: () {
+                                      unFocus();
+                                      ref
+                                          .read(
+                                            searchReceiversProvider.notifier,
+                                          )
+                                          .selectReceiver(index);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (_, _) =>
+                              const SizedBox(height: 16),
+                          itemCount: receivers.length,
+                        ),
+                      ),
               ),
             ),
           ],

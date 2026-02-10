@@ -17,5 +17,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SpraySessionCompleteRoute.page),
     AutoRoute(page: SpraySomeoneRoute.page),
     AutoRoute(page: SprayerSessionRoute.page),
+    AutoRoute(page: ScanQrRoute.page),
   ];
 }
