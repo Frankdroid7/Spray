@@ -33,6 +33,8 @@ class AppColors {
   /// App main background
   static const surfaceBackground = Color(0xFFF7F8F8);
 
+  static const surfaceBackgroundLighter = Color(0xFFF8F8F9);
+
   /// Dark surface (Google button)
   static const surfaceDark = Color(0xFF1F1F1E);
 

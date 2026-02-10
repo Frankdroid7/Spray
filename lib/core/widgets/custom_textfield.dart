@@ -170,7 +170,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style:
                 widget.style ??
                 context.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.surfaceDark,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
                 ),
             decoration: InputDecoration(
               errorMaxLines: 1,

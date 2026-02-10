@@ -1,5 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
+import 'package:spray/features/spray/presentation/views/sprayee/get_sprayed.dart';
+import 'package:spray/features/spray/presentation/views/sprayer/spray_someone.dart';
+import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
 
 class CoreActions extends StatelessWidget {
@@ -18,7 +22,7 @@ class CoreActions extends StatelessWidget {
             subtitle: "Send Money",
             title: "Spray Someone",
             image: "💸",
-            onTap: () {},
+            onTap: () => context.router.push(const SpraySomeoneRoute()),
           ),
         ),
         Expanded(
@@ -29,7 +33,7 @@ class CoreActions extends StatelessWidget {
             subtitle: "Receive Money",
             title: "Get Sprayed",
             image: "🎁",
-            onTap: () {},
+            onTap: () => context.router.push(const GetSprayedRoute()),
           ),
         ),
       ],
