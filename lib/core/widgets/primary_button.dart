@@ -80,7 +80,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
               backgroundColor:
                   widget.backgroundColor ??
                   Color.lerp(
-                    AppColors.brandPrimary.withValues(alpha: 0.75),
+                    AppColors.inactiveButton,
                     AppColors.brandPrimary,
                     transition.value,
                   ),

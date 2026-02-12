@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
+import 'package:spray/features/home/presentation/widgets/fund_wallet_modal.dart';
+import 'package:spray/features/home/presentation/widgets/withdraw_modal.dart';
 import 'package:spray/theme/app_colors.dart';
-import 'package:spray/theme/app_text_styles.dart';
 
 class WalletContainer extends ConsumerStatefulWidget {
   const WalletContainer({super.key});
@@ -21,6 +23,9 @@ class _WalletContainerState extends ConsumerState<WalletContainer> {
   @override
   Widget build(BuildContext context) {
     double amount = ref.watch(homeProvider.select((h) => h.balance));
+    String formatted = NumberFormat("#,##0.00").format(amount);
+    String whole = formatted.split('.')[0];
+    String decimals = formatted.split('.')[1];
 
     return Container(
       height: 200,
@@ -73,10 +78,10 @@ class _WalletContainerState extends ConsumerState<WalletContainer> {
               if (visible)
                 Text.rich(
                   TextSpan(
-                    text: "1,234.",
+                    text: "$whole.",
                     children: [
                       TextSpan(
-                        text: "56",
+                        text: decimals,
                         style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ],
@@ -110,14 +115,26 @@ class _WalletContainerState extends ConsumerState<WalletContainer> {
                 background: AppColors.brandPrimary,
                 text: Colors.white,
                 icon: IconsaxPlusLinear.add,
-                onTap: () {},
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) => const FundWalletModal(),
+                  );
+                },
               ),
               _Action(
                 title: "Withdraw",
                 background: AppColors.cardBackground,
                 text: Colors.black,
                 icon: IconsaxPlusLinear.arrow_up,
-                onTap: () {},
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) => const WithdrawModal(),
+                  );
+                },
               ),
               _Action(
                 title: "History",
@@ -170,9 +187,7 @@ class _Action extends StatelessWidget {
         ),
         Text(
           title,
-          style: context.textTheme.labelSmall?.copyWith(
-            color: Colors.black,
-          ),
+          style: context.textTheme.labelSmall?.copyWith(color: Colors.black),
         ),
       ],
     );

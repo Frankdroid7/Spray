@@ -71,4 +71,6 @@ class AppColors {
 
   static const coreActionSubtitleGreen = Color(0xFF149D4F);
 
+  static const inactiveButton = Color(0xFFBDBDBB);
+
 }
