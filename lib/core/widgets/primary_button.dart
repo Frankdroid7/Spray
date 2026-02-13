@@ -10,6 +10,7 @@ class PrimaryButton extends StatefulWidget {
   final Widget? child;
   final double? width;
   final double? height;
+  final double? radius;
   final Color? backgroundColor, textColor;
 
   const PrimaryButton({
@@ -21,6 +22,7 @@ class PrimaryButton extends StatefulWidget {
     this.textColor,
     required this.onPressed,
     this.child,
+    this.radius,
     this.active = true,
   });
 
@@ -92,8 +94,9 @@ class _PrimaryButtonState extends State<PrimaryButton>
                 widget.width ?? double.infinity,
                 widget.height ?? 48,
               ),
+              padding: EdgeInsets.zero,
               shape: RoundedSuperellipseBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(widget.radius ?? 16),
               ),
             ),
             onPressed: widget.onPressed,

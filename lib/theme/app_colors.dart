@@ -73,6 +73,10 @@ class AppColors {
 
   static const coreActionSubtitleGreen = Color(0xFF149D4F);
 
+  static const outlineGreen = Color(0xFF1BEAB4);
+
   static const inactiveButton = Color(0xFFBDBDBB);
+
+  static const lightBlue = Color(0xFFECF3FF);
 
 }
