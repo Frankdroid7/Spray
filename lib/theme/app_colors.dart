@@ -57,6 +57,8 @@ class AppColors {
   /// Card background
   static const cardBackground = Color(0xFFEEF0F2);
 
+  static const cardBackgroundDark = Color(0xFF464647);
+
   static const cardSurface = Color(0xFFF9FAFB);
 
   static const error = Color(0xFFFA4242);
