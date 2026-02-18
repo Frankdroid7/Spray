@@ -30,7 +30,7 @@ class RecentTransactions extends ConsumerWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            InkWell(
+            GestureDetector(
               onTap: () {},
               child: Row(
                 mainAxisSize: MainAxisSize.min,

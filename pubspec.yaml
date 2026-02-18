@@ -18,9 +18,13 @@ dependencies:
   badges: ^3.1.2
 
   device_preview: ^1.3.1
+  dropdown_button2:
 
   flutter_animate: ^4.5.2
+  flutter_dotted_border:
+  flutter_otp_text_field:
   flutter_riverpod: ^3.2.0
+  flutter_staggered_animations:
   flutter_svg: ^2.2.3
 
   google_fonts: ^8.0.0
@@ -28,9 +32,17 @@ dependencies:
   http: ^1.6.0
 
   iconsax_plus: ^1.0.0
+  image_picker:
   intl: ^0.20.1
 
   lucide_icons_flutter:
+
+  mobile_scanner:
+
+  qr_flutter:
+
+  share_plus:
+  skeletonizer:
 
 
 dev_dependencies:

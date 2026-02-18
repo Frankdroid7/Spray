@@ -49,6 +49,12 @@ class HomeNotifier extends Notifier<HomeState> {
       ],
     );
   }
+
+  void addBalance(double balance) {
+    state = state.copyWith(
+      balance: state.balance + balance
+    );
+  }
 }
 
 final NotifierProvider<HomeNotifier, HomeState> homeProvider = NotifierProvider(

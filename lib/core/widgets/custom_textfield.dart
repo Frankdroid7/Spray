@@ -7,7 +7,7 @@ import 'package:spray/theme/app_colors.dart';
 export 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 
 class CommaInputFormatter extends TextInputFormatter {
-  final NumberFormat formatter = NumberFormat.decimalPattern();
+  final NumberFormat _formatter = NumberFormat('#,##0', 'en_US');
 
   @override
   TextEditingValue formatEditUpdate(
@@ -18,18 +18,37 @@ class CommaInputFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    final digitsOnly = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
+    // Only allow digits, commas, and a single decimal point
+    String text = newValue.text.replaceAll(RegExp(r'[^\d.]'), '');
 
-    final formatted = formatter.format(int.parse(digitsOnly));
+    // Ensure only one decimal point
+    final dotIndex = text.indexOf('.');
+    if (dotIndex != -1) {
+      final before = text.substring(0, dotIndex);
+      final after = text.substring(dotIndex + 1).replaceAll('.', '');
+      text = '$before.$after';
+    }
 
-    final selectionIndex =
-        formatted.length - (oldValue.text.length - oldValue.selection.end);
+    // Split into whole and decimal parts
+    String wholePart;
+    String decimalPart = '';
+    if (text.contains('.')) {
+      wholePart = text.split('.')[0];
+      decimalPart = '.${text.split('.')[1]}';
+    } else {
+      wholePart = text;
+    }
+
+    // Format the whole part with commas
+    if (wholePart.isNotEmpty) {
+      wholePart = _formatter.format(int.parse(wholePart));
+    }
+
+    final formatted = '$wholePart$decimalPart';
 
     return TextEditingValue(
       text: formatted,
-      selection: TextSelection.collapsed(
-        offset: selectionIndex.clamp(0, formatted.length),
-      ),
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }
@@ -136,8 +155,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
             widget.label!,
             style: context.textTheme.labelSmall?.copyWith(
               color: AppColors.textSecondary,
-              letterSpacing: -0.3,
-              fontWeight: FontWeight.w500,
             ),
           ),
         SizedBox(
@@ -170,7 +187,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style:
                 widget.style ??
                 context.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.surfaceDark,
+                  color: AppColors.textDark,
+                  fontWeight: FontWeight.w500,
                 ),
             decoration: InputDecoration(
               errorMaxLines: 1,
@@ -200,7 +218,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     )
                   : null,
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: widget.radius ?? BorderRadius.circular(8),
                 borderSide: BorderSide(
                   color: widget.disableFocusedBorder
                       ? widget.disabledFocusedBorderColor!
@@ -208,13 +226,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ),
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: widget.radius ?? BorderRadius.circular(8),
                 borderSide: BorderSide(
                   color: widget.borderColor ?? AppColors.borderLight,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: widget.radius ?? BorderRadius.circular(8),
                 borderSide: BorderSide(
                   color: widget.borderColor ?? AppColors.borderLight,
                 ),

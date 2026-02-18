@@ -6,7 +6,8 @@ import 'package:spray/theme/app_colors.dart';
 
 
 class CustomBackButton extends StatelessWidget {
-  const CustomBackButton({super.key});
+  final bool invert;
+  const CustomBackButton({super.key, this.invert = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +21,13 @@ class CustomBackButton extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: invert ? AppColors.cardBackgroundDark : AppColors.cardBackground,
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
             child: Icon(
               Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
-              color: AppColors.surfaceDark,
+              color: invert ? Colors.white : AppColors.surfaceDark,
             ),
           ),
         ),

@@ -18,6 +18,7 @@ class AppTheme {
       bodyMedium: AppTextStyles.primaryBody,
       labelMedium: AppTextStyles.primaryLabel,
       labelSmall: AppTextStyles.primaryAction,
+      bodySmall: AppTextStyles.onPrimary,
     ),
     colorScheme: ColorScheme.light(
       primary: AppColors.brandPrimary,

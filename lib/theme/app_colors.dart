@@ -33,6 +33,8 @@ class AppColors {
   /// App main background
   static const surfaceBackground = Color(0xFFF7F8F8);
 
+  static const surfaceBackgroundLighter = Color(0xFFF8F8F9);
+
   /// Dark surface (Google button)
   static const surfaceDark = Color(0xFF1F1F1E);
 
@@ -55,14 +57,13 @@ class AppColors {
   /// Card background
   static const cardBackground = Color(0xFFEEF0F2);
 
-  static const cardSurface = Color(0xFFF9FAFB);
+  static const cardBackgroundDark = Color(0xFF464647);
 
+  static const cardSurface = Color(0xFFF9FAFB);
 
   static const error = Color(0xFFFA4242);
 
-
-
-
+  static const iconDark = Color(0xFF292D32);
 
   static const coreActionTitleBlue = Color(0xFF0440A8);
 
@@ -71,5 +72,11 @@ class AppColors {
   static const coreActionTitleGreen = Color(0xFF096430);
 
   static const coreActionSubtitleGreen = Color(0xFF149D4F);
+
+  static const outlineGreen = Color(0xFF1BEAB4);
+
+  static const inactiveButton = Color(0xFFBDBDBB);
+
+  static const lightBlue = Color(0xFFECF3FF);
 
 }

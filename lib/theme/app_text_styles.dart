@@ -121,10 +121,11 @@ class AppTextStyles {
 
   /// Text on dark / primary backgrounds (buttons)
   static final TextStyle onPrimary = GoogleFonts.interTight(
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     fontSize: 14,
     height: 1.0,
-    color: AppColors.textOnPrimary,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.02,
   );
 
 
