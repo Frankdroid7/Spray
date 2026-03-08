@@ -17,7 +17,7 @@ enum Denomination {
       hundredNaira => 100,
       twoHundredNaira => 200,
       fiveHundredNaira => 500,
-      oneThousandNaira => 10000
+      oneThousandNaira => 1000
     };
   }
 }

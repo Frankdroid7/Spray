@@ -11,7 +11,7 @@ import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/features/spray/domain/entities/denomination.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
-import 'package:spray/features/spray/presentation/widgets/wallet.dart';
+import 'package:spray/features/spray/presentation/widgets/bill_stack.dart';
 import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
 
@@ -28,7 +28,7 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
   late double initialBalance;
   Timer? sprayTimer;
 
-  double? currentSpeed;
+  String? currentSpeed = "1.0x";
   final List<double> speeds = [0.5, 1.0, 1.5, 2.0];
 
   final Map<Denomination, String> moneyImages = {
@@ -157,40 +157,102 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
             const SizedBox(height: 10),
             Expanded(
               child: Container(
+                width: double.infinity,
                 color: AppColors.surfaceBackgroundLighter,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 12,
                 ),
-                child: null,  // Add stacks of bills here based on the current denomination
+                alignment: Alignment.center,
+                child: BillStack(
+                  denomination: current,
+                  moneyImages: moneyImages,
+                  onSpray: spray,
+                ),
               ),
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                ComboBox<Denomination>(
-                  value: current,
-                  hint: "",
-                  dropdownItems: Denomination.values,
-                  onChanged: (v) {
-                    if (v == null) return;
-                    ref.read(sprayProvider.notifier).setCurrentDenomination(v);
-                  },
-                ),
-              ],
-            ),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: PrimaryButton(
-                onPressed: () {
-                  sprayTimer?.cancel();
-                  ref.read(homeProvider.notifier).addBalance(-total.toDouble());
-                  context.router.replace(const SpraySessionCompleteRoute());
-                },
-                text: "Stop Session",
-                backgroundColor: AppColors.error,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Denomination",
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          letterSpacing: 0,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ComboBox<int>(
+                        value: current.value,
+                        hint: "",
+                        buttonWidth: 70,
+                        buttonHeight: 35,
+                        iconEnabledColor: AppColors.brandPrimary,
+                        buttonColor: AppColors.surfaceBackgroundLighter,
+                        buttonPadding: EdgeInsets.all(4),
+                        dropdownWidth: 100,
+                        dropdownItems: Denomination.values
+                            .map((e) => e.value)
+                            .toList(),
+                        onChanged: (v) {
+                          if (v == null) return;
+
+                          Denomination d = Denomination.values.firstWhere(
+                            (e) => e.value == v,
+                          );
+                          ref
+                              .read(sprayProvider.notifier)
+                              .setCurrentDenomination(d);
+                        },
+                      ),
+                      const Spacer(),
+                      Text(
+                        "Spray Speed",
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          letterSpacing: 0,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ComboBox<String>(
+                        value: currentSpeed,
+                        hint: "",
+                        buttonWidth: 70,
+                        buttonHeight: 35,
+                        iconEnabledColor: AppColors.brandPrimary,
+                        buttonColor: AppColors.surfaceBackgroundLighter,
+                        buttonPadding: EdgeInsets.all(4),
+                        dropdownWidth: 100,
+                        dropdownItems: speeds.map((e) => "${e}x").toList(),
+                        onChanged: (v) {
+                          currentSpeed = v;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  PrimaryButton(
+                    onPressed: () {
+                      sprayTimer?.cancel();
+                      ref
+                          .read(homeProvider.notifier)
+                          .addBalance(-total.toDouble());
+                      context.router.replace(const SpraySessionCompleteRoute());
+                    },
+                    text: "Stop Session",
+                    backgroundColor: AppColors.error,
+                  ),
+                ],
               ),
             ),
+
             const SizedBox(height: 20),
           ],
         ),

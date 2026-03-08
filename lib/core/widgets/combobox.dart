@@ -14,6 +14,7 @@ class ComboBox<T> extends StatelessWidget {
   final Alignment? valueAlignment;
   final double? buttonHeight, buttonWidth;
   final EdgeInsetsGeometry? buttonPadding;
+  final Color? buttonColor;
   final BoxDecoration? buttonDecoration;
   final int? buttonElevation;
   final BorderRadiusGeometry? radius;
@@ -41,6 +42,7 @@ class ComboBox<T> extends StatelessWidget {
     this.label,
     this.radius,
     this.noDecoration = false,
+    this.buttonColor,
     this.selectedItemBuilder,
     this.hintAlignment,
     this.valueAlignment,
@@ -131,7 +133,7 @@ class ComboBox<T> extends StatelessWidget {
                   BoxDecoration(
                     borderRadius: radius ?? BorderRadius.circular(10),
                     border: Border.all(color: AppColors.borderLight),
-                    color: Colors.transparent,
+                    color: buttonColor ?? Colors.transparent,
                   ),
               elevation: buttonElevation,
             ),
