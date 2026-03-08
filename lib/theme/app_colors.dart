@@ -51,6 +51,8 @@ class AppColors {
 
   static const borderMedium = Color(0xFFEEF0F2);
 
+  static const borderHeavy = Color(0xFF9D9FAF);
+
 
   /* ---------------- Card ---------------- */
 

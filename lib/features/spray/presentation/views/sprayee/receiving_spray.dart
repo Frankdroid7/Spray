@@ -21,7 +21,7 @@ class ReceivingSprayPage extends ConsumerStatefulWidget {
 }
 
 class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
-  int seconds = 0, total = 0;
+  int total = 0;
   Timer? sprayTimer, randomMoneyTimer;
 
   @override
@@ -33,7 +33,7 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
         return;
       }
 
-      setState(() => seconds++);
+      ref.read(sprayProvider.notifier).incrementDuration();
     });
 
     randomMoneyTimer = Timer.periodic(const Duration(milliseconds: 1500), (t) {
@@ -157,7 +157,7 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
                 onPressed: () {
                   sprayTimer?.cancel();
                   randomMoneyTimer?.cancel();
-                  context.router.replace(SpraySessionCompleteRoute());
+                  context.router.push(const SpraySessionCompleteRoute());
                 },
                 text: "End Session",
                 backgroundColor: AppColors.error,
