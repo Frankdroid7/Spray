@@ -34,19 +34,26 @@ class SprayNotifier extends Notifier<SprayState> {
   }
 
   void addMoney(Denomination money) {
-    Map<Denomination, int> monies = state.monies;
+    Map<Denomination, int> monies = Map.from(state.monies);
     int? count = monies[money];
     monies[money] = count == null ? 1 : count + 1;
     state = state.copyWith(monies: monies);
   }
 
   void removeMoney(Denomination money) {
-    Map<Denomination, int> monies = state.monies;
+    Map<Denomination, int> monies = Map.from(state.monies);
     int? count = monies[money];
     if(count == null || count == 0) return;
 
     monies[money] = count - 1;
     state = state.copyWith(monies: monies);
+  }
+
+  void reset() {
+    state = state.copyWith(
+      current: Denomination.nil,
+      monies: const {}
+    );
   }
 }
 

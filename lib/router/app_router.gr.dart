@@ -27,7 +27,7 @@ import 'package:spray/features/spray/presentation/views/sprayer/scan_qr.dart'
     as _i7;
 import 'package:spray/features/spray/presentation/views/sprayer/setup_denominations.dart'
     as _i8;
-import 'package:spray/features/spray/presentation/views/sprayer/spray_session_complete.dart'
+import 'package:spray/features/spray/presentation/views/spray_session_complete.dart'
     as _i10;
 import 'package:spray/features/spray/presentation/views/sprayer/spray_someone.dart'
     as _i11;

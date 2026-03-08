@@ -9,6 +9,7 @@ import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/features/spray/domain/entities/denomination.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 import 'package:spray/features/spray/presentation/widgets/wallet.dart';
+import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
 
 @RoutePage()
@@ -156,7 +157,7 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
                 onPressed: () {
                   sprayTimer?.cancel();
                   randomMoneyTimer?.cancel();
-                  context.router.pop();
+                  context.router.replace(SpraySessionCompleteRoute());
                 },
                 text: "End Session",
                 backgroundColor: AppColors.error,
