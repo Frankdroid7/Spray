@@ -63,6 +63,8 @@ class AppColors {
 
   static const error = Color(0xFFFA4242);
 
+  static const success = Color(0xFF149D4F);
+
   static const iconDark = Color(0xFF292D32);
 
   static const coreActionTitleBlue = Color(0xFF0440A8);
