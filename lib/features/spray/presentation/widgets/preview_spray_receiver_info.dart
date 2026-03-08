@@ -104,6 +104,7 @@ class _PreviewSprayReceiverInfoState
           },
           text: "Start Spray Session",
         ),
+        const SizedBox(height: 20),
       ],
     );
   }

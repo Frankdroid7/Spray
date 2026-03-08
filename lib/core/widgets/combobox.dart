@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/theme/app_colors.dart';
 
-class ComboBox extends StatelessWidget {
+class ComboBox<T> extends StatelessWidget {
   final String hint;
-  final String? value;
+  final T? value;
   final String? label;
-  final List<String> dropdownItems;
-  final ValueChanged<String?>? onChanged;
+  final List<T> dropdownItems;
+  final ValueChanged<T?>? onChanged;
   final DropdownButtonBuilder? selectedItemBuilder;
   final Alignment? hintAlignment;
   final Alignment? valueAlignment;
@@ -82,7 +82,7 @@ class ComboBox extends StatelessWidget {
             ),
           ),
         DropdownButtonHideUnderline(
-          child: DropdownButton2<String>(
+          child: DropdownButton2<T>(
             isExpanded: true,
             hint: Container(
               alignment: hintAlignment,
@@ -99,12 +99,12 @@ class ComboBox extends StatelessWidget {
             value: value,
             items: dropdownItems
                 .map(
-                  (String item) => DropdownMenuItem<String>(
+                  (T item) => DropdownMenuItem<T>(
                 value: item,
                 child: Container(
                   alignment: valueAlignment,
                   child: Text(
-                    item,
+                    item.toString(),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: context.textTheme.bodyMedium?.copyWith(

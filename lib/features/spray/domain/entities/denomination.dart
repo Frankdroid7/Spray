@@ -1,5 +1,4 @@
 enum Denomination {
-  nil,
   fiveNaira,
   tenNaira,
   twentyNaira,
@@ -11,7 +10,6 @@ enum Denomination {
 
   int get value {
     return switch (this) {
-      nil => 0,
       fiveNaira => 5,
       tenNaira => 10,
       twentyNaira => 20,

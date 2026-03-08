@@ -8,7 +8,7 @@ class SprayState {
   final int swipes;
 
   const SprayState({
-    this.current = Denomination.nil,
+    this.current = Denomination.fiveHundredNaira,
     this.monies = const {},
     this.duration = 0,
     this.swipes = 0,
@@ -34,7 +34,7 @@ class SprayNotifier extends Notifier<SprayState> {
 
   @override
   SprayState build() =>
-      const SprayState(current: Denomination.fiveHundredNaira);
+      const SprayState();
 
   void setMonies(Map<Denomination, int> monies) {
     state = state.copyWith(monies: monies);

@@ -37,7 +37,6 @@ class _WalletState extends ConsumerState<Wallet> {
     super.initState();
     ref.listenManual(sprayProvider, (_, next) {
       Denomination denomination = next.current;
-      if (denomination == Denomination.nil) return;
 
       String? image = moneyImages[denomination];
       if (image == null) return;

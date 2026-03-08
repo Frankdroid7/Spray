@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/currency.dart';
 import 'package:spray/core/widgets/primary_button.dart';
+import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/features/spray/domain/entities/denomination.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 import 'package:spray/features/spray/presentation/widgets/wallet.dart';
@@ -22,11 +23,15 @@ class ReceivingSprayPage extends ConsumerStatefulWidget {
 
 class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
   int total = 0;
+  late double initialBalance;
   Timer? sprayTimer, randomMoneyTimer;
 
   @override
   void initState() {
     super.initState();
+
+    initialBalance = ref.read(homeProvider.select((u) => u.balance));
+
     sprayTimer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) {
         t.cancel();
@@ -76,16 +81,15 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 24),
-            if (current != Denomination.nil)
-              Text(
-                "₦${formatCurrency(current.value)}",
-                style: context.textTheme.displaySmall?.copyWith(
-                  color: AppColors.success,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.02,
-                  fontSize: 40,
-                ),
+            Text(
+              "₦${formatCurrency(total)}",
+              style: context.textTheme.displaySmall?.copyWith(
+                color: AppColors.success,
+                fontWeight: FontWeight.bold,
+                letterSpacing: -0.02,
+                fontSize: 40,
               ),
+            ),
             const SizedBox(height: 10),
             Text(
               "Total Received",
@@ -100,7 +104,7 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
                 text: "Balance: ",
                 children: [
                   TextSpan(
-                    text: "₦${formatCurrency(total)}",
+                    text: "₦${formatCurrency(total + initialBalance)}",
                     style: TextStyle(color: AppColors.brandPrimary),
                   ),
                 ],
@@ -157,7 +161,9 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
                 onPressed: () {
                   sprayTimer?.cancel();
                   randomMoneyTimer?.cancel();
-                  context.router.push(const SpraySessionCompleteRoute());
+
+                  ref.read(homeProvider.notifier).addBalance(total.toDouble());
+                  context.router.replace(const SpraySessionCompleteRoute());
                 },
                 text: "End Session",
                 backgroundColor: AppColors.error,
