@@ -4,12 +4,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spray/core/constants/images.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/currency.dart';
 import 'package:spray/core/widgets/combobox.dart';
 import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
-import 'package:spray/features/spray/domain/entities/denomination.dart';
+import 'package:spray/core/models/denomination.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 import 'package:spray/features/spray/presentation/widgets/bill_stack.dart';
 import 'package:spray/router/app_router.gr.dart';
@@ -31,9 +32,7 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
   String? currentSpeed = "1.0x";
   final List<double> speeds = [0.5, 1.0, 1.5, 2.0];
 
-  final Map<Denomination, String> moneyImages = {
-    Denomination.fiveHundredNaira: "assets/images/500_naira.png",
-  };
+
 
   @override
   void initState() {

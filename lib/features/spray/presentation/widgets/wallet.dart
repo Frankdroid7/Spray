@@ -1,15 +1,20 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spray/features/spray/domain/entities/denomination.dart';
+import 'package:spray/core/constants/images.dart';
+import 'package:spray/core/models/denomination.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 
 class _MoneyNote {
+  final int id;
   final String image;
   final double horizontalOffset;
   final double rotation;
   bool landed;
 
   _MoneyNote({
+    required this.id,
     required this.image,
     required this.horizontalOffset,
     required this.rotation,
@@ -25,18 +30,21 @@ class Wallet extends ConsumerStatefulWidget {
 }
 
 class _WalletState extends ConsumerState<Wallet> {
-  final Map<Denomination, String> moneyImages = {
-    Denomination.fiveHundredNaira: "assets/images/500_naira.png",
-  };
-
   final List<_MoneyNote> _notes = [];
+  final Random _random = Random();
   int _noteCounter = 0;
+  int _lastSwipes = 0;
 
   @override
   void initState() {
     super.initState();
+
     ref.listenManual(sprayProvider, (_, next) {
-      Denomination denomination = next.current;
+      if (next.swipes == _lastSwipes) return;
+      _lastSwipes = next.swipes;
+
+      Denomination? denomination = next.last;
+      if (denomination == null) return;
 
       String? image = moneyImages[denomination];
       if (image == null) return;
@@ -47,18 +55,19 @@ class _WalletState extends ConsumerState<Wallet> {
 
   void _addMoneyNote(String image) {
     int index = _noteCounter++;
-    double offset = (index % 5 - 2) * 8.0;
-    double rotation = (index % 3 - 1) * 0.05;
+    double offset = (_random.nextDouble() * 2 - 1) * 30.0;
+    double rotation = (_random.nextDouble() * 2 - 1) * 0.1;
 
     _MoneyNote note = _MoneyNote(
+      id: index,
       image: image,
       horizontalOffset: offset,
       rotation: rotation,
     );
     setState(() {
       _notes.add(note);
-      if (_notes.length > 10) {
-        _notes.removeRange(0, _notes.length - 10);
+      if (_notes.length > 20) {
+        _notes.removeRange(0, _notes.length - 20);
       }
     });
 
@@ -72,11 +81,13 @@ class _WalletState extends ConsumerState<Wallet> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.sizeOf(context).height;
+
     return SizedBox(
       width: double.infinity,
-      height: 230,
+      height: 250,
       child: Stack(
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip.none,
         children: [
           Positioned(
             bottom: 0,
@@ -90,9 +101,10 @@ class _WalletState extends ConsumerState<Wallet> {
           ),
           for (final note in _notes)
             AnimatedPositioned(
+              key: ValueKey(note.id),
               duration: const Duration(milliseconds: 600),
               curve: Curves.easeOutCubic,
-              bottom: note.landed ? -200 : 200,
+              bottom: note.landed ? 10 : screenHeight * 2,
               left: note.horizontalOffset,
               right: -note.horizontalOffset,
               child: AnimatedOpacity(
@@ -100,9 +112,11 @@ class _WalletState extends ConsumerState<Wallet> {
                 opacity: note.landed ? 1.0 : 0.3,
                 child: Transform.rotate(
                   angle: note.rotation,
-                  child: Transform.scale(
-                    scale: 0.45,
-                    child: Image.asset(note.image, fit: BoxFit.cover),
+                  child: Image.asset(
+                    note.image,
+                    fit: BoxFit.contain,
+                    height: 250,
+                    width: 100,
                   ),
                 ),
               ),

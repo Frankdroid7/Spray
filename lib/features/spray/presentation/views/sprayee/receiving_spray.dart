@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/currency.dart';
+import 'package:spray/core/models/denomination.dart';
 import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
-import 'package:spray/features/spray/domain/entities/denomination.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 import 'package:spray/features/spray/presentation/widgets/wallet.dart';
 import 'package:spray/router/app_router.gr.dart';
@@ -41,13 +41,13 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
       ref.read(sprayProvider.notifier).incrementDuration();
     });
 
-    randomMoneyTimer = Timer.periodic(const Duration(milliseconds: 1500), (t) {
+    randomMoneyTimer = Timer.periodic(const Duration(milliseconds: 250), (t) {
       if (!mounted) {
         t.cancel();
         return;
       }
 
-      ref.read(sprayProvider.notifier).addMoney(Denomination.fiveHundredNaira);
+      ref.read(sprayProvider.notifier).addMoney(Denomination.twoHundredNaira);
     });
 
     ref.listenManual(sprayProvider, (_, next) {
@@ -122,34 +122,41 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
                   horizontal: 24,
                   vertical: 12,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                child: Stack(
                   children: [
-                    Text(
-                      "🎉",
-                      style: context.textTheme.titleLarge?.copyWith(
-                        fontSize: 48,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "🎉",
+                          style: context.textTheme.titleLarge?.copyWith(
+                            fontSize: 48,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Receiving Money!",
+                          style: context.textTheme.labelSmall?.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Watch it rain 💸",
+                          style: context.textTheme.labelSmall?.copyWith(
+                            color: AppColors.brandDark,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      "Receiving Money!",
-                      style: context.textTheme.labelSmall?.copyWith(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: const Wallet(),
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      "Watch it rain 💸",
-                      style: context.textTheme.labelSmall?.copyWith(
-                        color: AppColors.brandDark,
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    const Wallet(),
+
                   ],
                 ),
               ),

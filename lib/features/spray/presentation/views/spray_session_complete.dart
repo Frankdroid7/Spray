@@ -6,7 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/currency.dart';
 import 'package:spray/core/widgets/primary_button.dart';
-import 'package:spray/features/spray/domain/entities/denomination.dart';
+import 'package:spray/core/models/denomination.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
@@ -45,10 +45,20 @@ class _SpraySessionCompletePageState
         confettiStyle: ConfettiStyle.ribbons,
         animationStyle: AnimationConfetti.falling,
         density: ConfettiDensity.high,
-        durationInSeconds: 3,
+        durationInSeconds: 2,
         isClosedDialogAutomatic: true,
       );
     });
+  }
+
+  String _formatDuration(int totalSeconds) {
+    int h = totalSeconds ~/ 3600;
+    int m = (totalSeconds % 3600) ~/ 60;
+    int s = totalSeconds % 60;
+
+    if (h > 0) return '${h}h ${m}m ${s}s';
+    if (m > 0) return '${m}m ${s}s';
+    return '${s}s';
   }
 
   void onPop() {
@@ -147,7 +157,7 @@ class _SpraySessionCompletePageState
                             Expanded(
                               child: _Stats(
                                 name: "Duration",
-                                value: "${duration}s",
+                                value: _formatDuration(duration),
                               ),
                             ),
                             Expanded(

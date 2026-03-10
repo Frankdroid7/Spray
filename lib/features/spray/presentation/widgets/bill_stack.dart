@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spray/features/spray/domain/entities/denomination.dart';
+import 'package:spray/core/models/denomination.dart';
 
 class BillStack extends StatefulWidget {
   final Denomination denomination;
