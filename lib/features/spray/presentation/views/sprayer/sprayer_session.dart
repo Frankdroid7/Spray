@@ -68,7 +68,14 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
     super.dispose();
   }
 
+  int get remaining {
+    int balanceLeft = (initialBalance - total).toInt();
+    int capLeft = cap - total;
+    return balanceLeft < capLeft ? balanceLeft : capLeft;
+  }
+
   void spray() {
+    if (remaining <= 0) return;
     Denomination current = ref.read(sprayProvider.select((u) => u.current));
     ref.read(sprayProvider.notifier).addMoney(current);
   }
@@ -76,6 +83,7 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
   @override
   Widget build(BuildContext context) {
     Denomination current = ref.watch(sprayProvider.select((u) => u.current));
+    bool capReached = remaining <= 0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -144,13 +152,14 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
               spacing: 8,
               children: [
                 Text(
-                  "Swipe up to spray",
+                  capReached ? "Cap reached!" : "Swipe up to spray",
                   style: context.textTheme.labelSmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: capReached ? AppColors.error : AppColors.textSecondary,
                     letterSpacing: 0,
                   ),
                 ),
-                SvgPicture.asset("assets/svgs/spray_swipe.svg", width: 20),
+                if (!capReached)
+                  SvgPicture.asset("assets/svgs/spray_swipe.svg", width: 20),
               ],
             ),
             const SizedBox(height: 10),
@@ -167,6 +176,7 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
                   denomination: current,
                   moneyImages: moneyImages,
                   onSpray: spray,
+                  remaining: remaining,
                 ),
               ),
             ),

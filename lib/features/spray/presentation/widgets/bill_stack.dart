@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:spray/core/models/denomination.dart';
 
@@ -5,12 +7,14 @@ class BillStack extends StatefulWidget {
   final Denomination denomination;
   final Map<Denomination, String> moneyImages;
   final VoidCallback onSpray;
+  final int remaining;
 
   const BillStack({
     super.key,
     required this.denomination,
     required this.moneyImages,
     required this.onSpray,
+    required this.remaining,
   });
 
   @override
@@ -19,7 +23,7 @@ class BillStack extends StatefulWidget {
 
 class _BillStackState extends State<BillStack>
     with SingleTickerProviderStateMixin {
-  static const int stackSize = 8;
+  static const int maxStackSize = 8;
   static const double stackSpacing = 3.0;
 
   late AnimationController _controller;
@@ -83,9 +87,15 @@ class _BillStackState extends State<BillStack>
   }
 
   void _triggerSpray() {
-    if (_isSwiping) return;
+    if (_isSwiping || _billCount == 0) return;
     setState(() => _isSwiping = true);
     _controller.forward();
+  }
+
+  int get _billCount {
+    if (widget.remaining <= 0) return 0;
+    int bills = widget.remaining ~/ widget.denomination.value;
+    return min(bills, maxStackSize);
   }
 
   @override
@@ -95,33 +105,41 @@ class _BillStackState extends State<BillStack>
       return const Center(child: Text("No bill image available"));
     }
 
+    int count = _billCount;
+    bool disabled = count == 0;
+    int staticCount = max(count - 1, 0);
+
     return GestureDetector(
-      onVerticalDragUpdate: _onVerticalDragUpdate,
-      onVerticalDragEnd: _onVerticalDragEnd,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Bottom bills in the stack (static)
-          for (int i = 0; i < stackSize; i++)
-            Transform.translate(
-              offset: Offset(0, -i * stackSpacing),
-              child: Transform.rotate(
-                angle: (i % 3 - 1) * 0.02,
-                child: Image.asset(image, fit: BoxFit.contain),
+      onVerticalDragUpdate: disabled ? null : _onVerticalDragUpdate,
+      onVerticalDragEnd: disabled ? null : _onVerticalDragEnd,
+      child: Opacity(
+        opacity: disabled ? 0.4 : 1.0,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Bottom bills in the stack (static)
+            for (int i = 0; i < staticCount; i++)
+              Transform.translate(
+                offset: Offset(0, -i * stackSpacing),
+                child: Transform.rotate(
+                  angle: (i % 3 - 1) * 0.02,
+                  child: Image.asset(image, fit: BoxFit.contain),
+                ),
               ),
-            ),
-          // Top bill (animated on swipe)
-          SlideTransition(
-            position: _slideAnimation,
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: Transform.translate(
-                offset: const Offset(0, -stackSize * stackSpacing),
-                child: Image.asset(image, fit: BoxFit.contain),
+            // Top bill (animated on swipe)
+            if (count > 0)
+              SlideTransition(
+                position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Transform.translate(
+                    offset: Offset(0, -staticCount * stackSpacing),
+                    child: Image.asset(image, fit: BoxFit.contain),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
