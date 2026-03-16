@@ -27,10 +27,12 @@ class _BillStackState extends State<BillStack>
   static const double stackSpacing = 3.0;
 
   late AnimationController _controller;
-  late Animation<Offset> _slideAnimation;
+  late CurvedAnimation _curvedAnimation;
   late Animation<double> _fadeAnimation;
 
   bool _isSwiping = false;
+  Offset _dragDelta = Offset.zero;
+  Offset _flyDirection = const Offset(0, -2.0);
 
   @override
   void initState() {
@@ -40,26 +42,23 @@ class _BillStackState extends State<BillStack>
       duration: const Duration(milliseconds: 400),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(0, -2.0),
-    ).animate(CurvedAnimation(
+    _curvedAnimation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeOut,
-    ));
+    );
 
     _fadeAnimation = Tween<double>(
       begin: 1.0,
       end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(_curvedAnimation);
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _controller.reset();
-        setState(() => _isSwiping = false);
+        setState(() {
+          _isSwiping = false;
+          _dragDelta = Offset.zero;
+        });
         widget.onSpray();
       }
     });
@@ -67,28 +66,44 @@ class _BillStackState extends State<BillStack>
 
   @override
   void dispose() {
+    _curvedAnimation.dispose();
     _controller.dispose();
     super.dispose();
   }
 
-  void _onVerticalDragUpdate(DragUpdateDetails details) {
+  void _onPanUpdate(DragUpdateDetails details) {
     if (_isSwiping) return;
-    // Detect upward swipe
-    if (details.primaryDelta != null && details.primaryDelta! < -8) {
+    _dragDelta += details.delta;
+
+    // Trigger spray once the user has dragged upward enough
+    if (_dragDelta.dy < -8) {
       _triggerSpray();
     }
   }
 
-  void _onVerticalDragEnd(DragEndDetails details) {
+  void _onPanEnd(DragEndDetails details) {
     if (_isSwiping) return;
-    if (details.primaryVelocity != null && details.primaryVelocity! < -200) {
+    final velocity = details.velocity.pixelsPerSecond;
+    if (velocity.dy < -200) {
+      // Use velocity direction for the fly angle
+      final dx = velocity.dx.clamp(-600.0, 600.0) / 600.0;
+      _dragDelta = Offset(dx * 20, -20);
       _triggerSpray();
     }
+    _dragDelta = Offset.zero;
   }
 
   void _triggerSpray() {
     if (_isSwiping || _billCount == 0) return;
-    setState(() => _isSwiping = true);
+
+    // Compute fly direction from drag delta
+    // Normalize horizontal: clamp to [-1.2, 1.2] range for the fractional offset
+    final dx = (_dragDelta.dx / 30.0).clamp(-1.2, 1.2);
+
+    setState(() {
+      _isSwiping = true;
+      _flyDirection = Offset(dx, -2.0);
+    });
     _controller.forward();
   }
 
@@ -110,8 +125,8 @@ class _BillStackState extends State<BillStack>
     int staticCount = max(count - 1, 0);
 
     return GestureDetector(
-      onVerticalDragUpdate: disabled ? null : _onVerticalDragUpdate,
-      onVerticalDragEnd: disabled ? null : _onVerticalDragEnd,
+      onPanUpdate: disabled ? null : _onPanUpdate,
+      onPanEnd: disabled ? null : _onPanEnd,
       child: Opacity(
         opacity: disabled ? 0.4 : 1.0,
         child: Stack(
@@ -128,15 +143,25 @@ class _BillStackState extends State<BillStack>
               ),
             // Top bill (animated on swipe)
             if (count > 0)
-              SlideTransition(
-                position: _slideAnimation,
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Transform.translate(
-                    offset: Offset(0, -staticCount * stackSpacing),
-                    child: Image.asset(image, fit: BoxFit.contain),
-                  ),
-                ),
+              AnimatedBuilder(
+                animation: _curvedAnimation,
+                builder: (context, child) {
+                  final progress = _curvedAnimation.value;
+                  return FractionalTranslation(
+                    translation: Offset(
+                      _flyDirection.dx * progress,
+                      _flyDirection.dy * progress,
+                    ),
+                    child: Opacity(
+                      opacity: _fadeAnimation.value,
+                      child: Transform.translate(
+                        offset: Offset(0, -staticCount * stackSpacing),
+                        child: child,
+                      ),
+                    ),
+                  );
+                },
+                child: Image.asset(image, fit: BoxFit.contain),
               ),
           ],
         ),

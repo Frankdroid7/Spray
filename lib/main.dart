@@ -9,7 +9,7 @@ import 'package:spray/theme/app_theme.dart';
 void main() {
   runApp(
     DevicePreview(
-      enabled: kDebugMode,
+      enabled: false ,// kDebugMode,
       builder: (_) => const ProviderScope(child: Spray()),
     ),
   );
