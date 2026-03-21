@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/focus.dart';
 import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/core/widgets/secondary_button.dart';
+import 'package:spray/features/spray/data/spray_session_repository.dart';
 import 'package:spray/features/spray/domain/entities/spray_receiver.dart';
 import 'package:spray/features/spray/presentation/providers/search_receiver_provider.dart';
 import 'package:spray/features/spray/presentation/widgets/custom_code_field.dart';
@@ -26,14 +26,43 @@ class PreviewSprayReceiverInfo extends ConsumerStatefulWidget {
 
 class _PreviewSprayReceiverInfoState
     extends ConsumerState<PreviewSprayReceiverInfo> {
-  String code = "";
+  String digit = "";
+  bool _loading = false;
 
   Future<void> navigateToQRPage() async {
     var result = await context.router.push(ScanQrRoute());
     if (result == null || !mounted) return;
 
-    code = result as String;
+    digit = result as String;
     setState(() {});
+  }
+
+  Future<void> _startSession() async {
+    if (digit.length < 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter the 4-digit code")),
+      );
+      return;
+    }
+
+    setState(() => _loading = true);
+
+    final repo = ref.read(spraySessionRepositoryProvider);
+    final valid = await repo.validateAndStartSession(widget.receiver.id, digit);
+
+    if (!mounted) return;
+    setState(() => _loading = false);
+
+    if (!valid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid code. Ask the receiver to share their code."),
+        ),
+      );
+      return;
+    }
+
+    context.router.replace(const SprayerSessionRoute());
   }
 
   @override
@@ -55,8 +84,10 @@ class _PreviewSprayReceiverInfoState
         CustomCodeField(
           fields: 4,
           onComplete: (code) {
+
+            print('CODE -> $code');
             unFocus();
-            setState(() => this.code = code);
+            setState(() => digit = code);
           },
         ),
         const SizedBox(height: 24),
@@ -99,10 +130,9 @@ class _PreviewSprayReceiverInfoState
         ),
         const Spacer(),
         PrimaryButton(
-          onPressed: () {
-            context.router.replace(const SprayerSessionRoute());
-          },
-          text: "Start Spray Session",
+          onPressed: _startSession,
+          active: !_loading,
+          text: _loading ? "Verifying..." : "Start Spray Session",
         ),
         const SizedBox(height: 20),
       ],

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "264846464929",
+    "project_id": "spraypay-frankdroid",
+    "storage_bucket": "spraypay-frankdroid.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264846464929:android:282b645d627c94d8ce9de0",
+        "android_client_info": {
+          "package_name": "com.example.spray"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264846464929-ohfabnln6ki98jgc2ddmho5037cesqql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spray",
+            "certificate_hash": "afba3e9ef98a4a7553f8671ca067c6af51961fea"
+          }
+        },
+        {
+          "client_id": "264846464929-v57b9gq5mntejeq3tull84pqda98r2ar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAywIieP-UgkKReGsJfZQHiNXu0ef6zHM0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264846464929-v57b9gq5mntejeq3tull84pqda98r2ar.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "264846464929-uem5d3m3c5mlu2d7ku29r1kivngi6ldj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.spray"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

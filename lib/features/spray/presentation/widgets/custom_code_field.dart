@@ -57,6 +57,7 @@ class _CustomCodeFieldState extends State<CustomCodeField> {
     if (text.length == 1) {
       if (index == widget.fields - 1) {
         nodes[index].unfocus();
+        widget.onComplete(controllers.map((c) => c.text).join());
       } else {
         _focusAndSelect(index + 1);
       }

@@ -1,20 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
-import 'package:spray/router/app_router.dart';
+import 'package:spray/features/authentication/view_models/auth_provider.dart';
 import 'package:spray/router/app_router.gr.dart';
 import 'package:spray/theme/app_colors.dart';
 
 @RoutePage()
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> animation;
@@ -48,7 +49,12 @@ class _SplashScreenState extends State<SplashScreen>
     await controller.reverse();
     if (!mounted) return;
 
-    context.router.replace(OnboardingRoute());
+    final user = ref.read(authStateProvider).value;
+    if (user != null) {
+      context.router.replaceAll(const [HomeRoute()]);
+    } else {
+      context.router.replace(OnboardingRoute());
+    }
   }
 
   @override

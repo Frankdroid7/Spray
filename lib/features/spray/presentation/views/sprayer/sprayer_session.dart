@@ -38,7 +38,7 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
   void initState() {
     super.initState();
 
-    initialBalance = ref.read(homeProvider.select((u) => u.balance));
+    initialBalance = ref.read(homeProvider.select((async) => async.value?.balance ?? 0.0));
 
     sprayTimer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) {

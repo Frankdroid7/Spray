@@ -22,7 +22,7 @@ class _WalletContainerState extends ConsumerState<WalletContainer> {
 
   @override
   Widget build(BuildContext context) {
-    double amount = ref.watch(homeProvider.select((h) => h.balance));
+    double amount = ref.watch(homeProvider.select((async) => async.value?.balance ?? 0.0));
     String formatted = NumberFormat("#,##0.00").format(amount);
     String whole = formatted.split('.')[0];
     String decimals = formatted.split('.')[1];

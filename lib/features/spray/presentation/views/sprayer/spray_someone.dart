@@ -29,10 +29,6 @@ class _SpraySomeonePageState extends ConsumerState<SpraySomeonePage> {
   void initState() {
     super.initState();
     controller.addListener(_searchUser);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchReceiversProvider.notifier).search('');
-    });
   }
 
   @override
