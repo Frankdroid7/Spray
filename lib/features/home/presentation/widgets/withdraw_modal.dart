@@ -8,6 +8,7 @@ import 'package:spray/core/widgets/close_button.dart';
 import 'package:spray/core/widgets/combobox.dart';
 import 'package:spray/core/widgets/custom_textfield.dart';
 import 'package:spray/core/widgets/primary_button.dart';
+import 'package:spray/core/models/transaction.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/features/home/presentation/widgets/naira_icon.dart';
 import 'package:spray/theme/app_colors.dart';
@@ -63,7 +64,7 @@ class _WithdrawModalState extends ConsumerState<WithdrawModal> {
   @override
   Widget build(BuildContext context) {
     double targetHeight = MediaQuery.sizeOf(context).height * 0.7;
-    double balance = ref.watch(homeProvider.select((h) => h.balance));
+    double balance = ref.watch(homeProvider.select((async) => async.value?.balance ?? 0.0));
 
     return Container(
       width: double.infinity,
@@ -164,12 +165,28 @@ class _WithdrawModalState extends ConsumerState<WithdrawModal> {
             ),
           const Spacer(),
           PrimaryButton(
-            onPressed: () {
-              String amount = amountController.text.trim().replaceAll(",", "");
-              double value = double.parse(amount);
-
-              ref.read(homeProvider.notifier).addBalance(-value);
-              context.router.pop();
+            onPressed: () async {
+              final value = double.tryParse(
+                      amountController.text.trim().replaceAll(",", "")) ??
+                  0.0;
+              if (value <= 0) return;
+              final router = context.router;
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                await ref.read(homeProvider.notifier).addBalance(
+                      -value,
+                      type: TransactionType.debit,
+                      narration: 'Withdrawal',
+                    );
+                if (mounted) router.pop();
+              } catch (_) {
+                if (mounted) {
+                  messenger.showSnackBar(
+                    const SnackBar(
+                        content: Text('Withdrawal failed. Try again.')),
+                  );
+                }
+              }
             },
             text: "Withdraw",
             active: resolvedName.isNotEmpty && amount > 0.0,

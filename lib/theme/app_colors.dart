@@ -51,6 +51,8 @@ class AppColors {
 
   static const borderMedium = Color(0xFFEEF0F2);
 
+  static const borderHeavy = Color(0xFF9D9FAF);
+
 
   /* ---------------- Card ---------------- */
 
@@ -62,6 +64,8 @@ class AppColors {
   static const cardSurface = Color(0xFFF9FAFB);
 
   static const error = Color(0xFFFA4242);
+
+  static const success = Color(0xFF149D4F);
 
   static const iconDark = Color(0xFF292D32);
 
@@ -78,5 +82,7 @@ class AppColors {
   static const inactiveButton = Color(0xFFBDBDBB);
 
   static const lightBlue = Color(0xFFECF3FF);
+
+  static const capYellow = Color(0xFFFB9005);
 
 }

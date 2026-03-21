@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
-import 'package:spray/features/home/presentation/providers/home_provider.dart';
+import 'package:spray/features/authentication/view_models/auth_provider.dart';
 import 'package:spray/features/home/presentation/widgets/wallet_container.dart';
 import 'package:spray/features/home/presentation/widgets/core_actions.dart';
 import 'package:spray/features/home/presentation/widgets/recent_transactions.dart';
 import 'package:spray/theme/app_colors.dart';
+
+import '../../../../router/app_router.gr.dart';
 
 @RoutePage()
 class HomePage extends ConsumerStatefulWidget {
@@ -23,9 +25,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(homeProvider.notifier).addDummyTransactions();
-    });
   }
 
 
@@ -35,7 +34,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Hi, Freeborn',
+          'Hi, ${ref.watch(authStateProvider).value?.displayName ?? ''}',
           style: context.textTheme.bodyMedium?.copyWith(
             fontSize: 20,
             color: AppColors.textPrimary,
@@ -44,6 +43,15 @@ class _HomePageState extends ConsumerState<HomePage> {
         centerTitle: false,
         automaticallyImplyLeading: false,
         actions: [
+          IconButton(
+            onPressed: () async {
+              await ref.read(authServiceProvider).signOut();
+              if (context.mounted) {
+                context.router.replaceAll([OnboardingRoute()]);
+              }
+            },
+            icon: const Icon(IconsaxPlusLinear.logout),
+          ),
           IconButton(
             onPressed: () {},
             icon: bg.Badge(

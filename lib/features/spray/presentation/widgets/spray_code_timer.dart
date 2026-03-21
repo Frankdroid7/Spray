@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,14 +11,15 @@ import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/theme/app_colors.dart';
 
 class SprayCodeTimer extends StatefulWidget {
-  const SprayCodeTimer({super.key});
+  final String code;
+
+  const SprayCodeTimer({super.key, required this.code});
 
   @override
   State<SprayCodeTimer> createState() => _SprayCodeTimerState();
 }
 
 class _SprayCodeTimerState extends State<SprayCodeTimer> {
-  final String code = (1000 + Random().nextInt(9000)).toString();
   int totalMinutes = 60 * 12; // Total minutes in 12 hours
 
   @override
@@ -63,7 +63,7 @@ class _SprayCodeTimerState extends State<SprayCodeTimer> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                code,
+                widget.code,
                 style: context.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   letterSpacing: 2,
@@ -94,7 +94,7 @@ class _SprayCodeTimerState extends State<SprayCodeTimer> {
                 ),
               ),
               const SizedBox(height: 24),
-              QrImageView(data: code, version: QrVersions.auto, size: 185),
+              QrImageView(data: widget.code, version: QrVersions.auto, size: 185),
               const SizedBox(height: 24),
               Row(
                 spacing: 16,
@@ -102,7 +102,7 @@ class _SprayCodeTimerState extends State<SprayCodeTimer> {
                 children: [
                   PrimaryButton(
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(text: code));
+                      Clipboard.setData(ClipboardData(text: widget.code));
                     },
                     backgroundColor: AppColors.lightBlue,
                     width: 110,
@@ -132,7 +132,7 @@ class _SprayCodeTimerState extends State<SprayCodeTimer> {
                   PrimaryButton(
                     onPressed: () {
                       SharePlus.instance.share(ShareParams(
-                        text: "Connect with me on SprayPay with this code: $code"
+                        text: "Connect with me on SprayPay with this code: ${widget.code}"
                       ));
                     },
                     backgroundColor: AppColors.lightBlue,

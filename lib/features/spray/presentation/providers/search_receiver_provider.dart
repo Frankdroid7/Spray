@@ -1,11 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spray/core/models/transaction.dart';
+import 'package:spray/features/spray/data/user_repository.dart';
 import 'package:spray/features/spray/domain/entities/spray_receiver.dart';
-
-final List<SprayReceiver> _dummyReceivers = List.generate(
-  6,
-  (i) => SprayReceiver(id: "$i"),
-);
 
 class SearchReceiverState {
   final bool loading;
@@ -37,33 +32,35 @@ class SearchReceiverState {
 }
 
 class SearchReceiverNotifier extends Notifier<SearchReceiverState> {
-  SearchReceiverNotifier();
+  List<SprayReceiver> _allUsers = [];
 
   @override
-  SearchReceiverState build() => const SearchReceiverState();
+  SearchReceiverState build() {
+    _loadUsers();
+    return const SearchReceiverState(loading: true);
+  }
 
-  void search(String query) async {
+  Future<void> _loadUsers() async {
+    try {
+      final repo = ref.read(userRepositoryProvider);
+      _allUsers = await repo.getAllUsers();
+      state = state.copyWith(receivers: _allUsers, loading: false);
+    } catch (e) {
+      state = state.copyWith(error: e.toString(), loading: false);
+    }
+  }
+
+  void search(String query) {
     if (query.isEmpty) {
-      state = state.copyWith(
-        loading: false,
-        receivers: [],
-        selectedReceiverIndex: -1,
-      );
+      state = state.copyWith(receivers: _allUsers, selectedReceiverIndex: -1);
       return;
     }
 
-    state = state.copyWith(
-      loading: true,
-      receivers: _dummyReceivers,
-      selectedReceiverIndex: -1,
-    );
-    await Future.delayed(Duration(seconds: 1));
-    state = state.copyWith(
-      receivers: [
-        SprayReceiver(id: "1", name: "Freeborn Ehirhere", tag: "@Freeborn"),
-      ],
-      loading: false,
-    );
+    final lower = query.toLowerCase();
+    final filtered = _allUsers
+        .where((u) => u.name.toLowerCase().contains(lower))
+        .toList();
+    state = state.copyWith(receivers: filtered, selectedReceiverIndex: -1);
   }
 
   void selectReceiver(int index) {
@@ -72,4 +69,4 @@ class SearchReceiverNotifier extends Notifier<SearchReceiverState> {
 }
 
 final NotifierProvider<SearchReceiverNotifier, SearchReceiverState>
-searchReceiversProvider = NotifierProvider(SearchReceiverNotifier.new);
+    searchReceiversProvider = NotifierProvider(SearchReceiverNotifier.new);

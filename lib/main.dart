@@ -1,15 +1,18 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:spray/firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spray/router/app_router.dart';
 import 'package:spray/theme/app_theme.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-void main() {
   runApp(
     DevicePreview(
-      enabled: kDebugMode,
+      enabled: false, // kDebugMode,
       builder: (_) => const ProviderScope(child: Spray()),
     ),
   );

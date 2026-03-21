@@ -7,6 +7,7 @@ import 'package:spray/core/functions/currency.dart';
 import 'package:spray/core/widgets/close_button.dart';
 import 'package:spray/core/widgets/custom_textfield.dart';
 import 'package:spray/core/widgets/primary_button.dart';
+import 'package:spray/core/models/transaction.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/features/home/presentation/widgets/naira_icon.dart';
 import 'package:spray/theme/app_colors.dart';
@@ -123,9 +124,26 @@ class _FundWalletModalState extends ConsumerState<FundWalletModal> {
           ),
           const Spacer(),
           PrimaryButton(
-            onPressed: () {
-              ref.read(homeProvider.notifier).addBalance(amount);
-              context.router.pop();
+            onPressed: () async {
+              print('AMOUNT -> $amount');
+              if (amount <= 0) return;
+              final router = context.router;
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                await ref.read(homeProvider.notifier).addBalance(
+                      amount,
+                      type: TransactionType.fund,
+                      narration: 'Wallet funded',
+                    );
+                if (mounted) router.pop();
+              } catch (_) {
+                if (mounted) {
+                  messenger.showSnackBar(
+                    const SnackBar(
+                        content: Text('Failed to fund wallet. Try again.')),
+                  );
+                }
+              }
             },
             text: "Add ₦${formatCurrency(amount, true)} to Wallet",
             active: amount > 0.0,

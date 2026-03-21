@@ -12,7 +12,7 @@ class RecentTransactions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     List<Transaction> transactions = ref.watch(
-      homeProvider.select((h) => h.transactions),
+      homeProvider.select((async) => async.value?.transactions ?? const []),
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
