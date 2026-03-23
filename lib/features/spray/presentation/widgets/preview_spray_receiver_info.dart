@@ -6,6 +6,7 @@ import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/focus.dart';
 import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/core/widgets/secondary_button.dart';
+import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/features/spray/data/spray_session_repository.dart';
 import 'package:spray/features/spray/domain/entities/spray_receiver.dart';
 import 'package:spray/features/spray/presentation/providers/search_receiver_provider.dart';
@@ -57,6 +58,20 @@ class _PreviewSprayReceiverInfoState
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Invalid code. Ask the receiver to share their code."),
+        ),
+      );
+      return;
+    }
+
+    final balance = ref.read(
+      homeProvider.select((async) => async.value?.balance ?? 0.0),
+    );
+    if (balance < 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Insufficient balance. You need at least ₦200 to spray.",
+          ),
         ),
       );
       return;

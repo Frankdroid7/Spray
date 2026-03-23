@@ -75,7 +75,15 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
   }
 
   void spray() {
-    if (remaining <= 0) return;
+    if (remaining <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Insufficient balance to spray."),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
     Denomination current = ref.read(sprayProvider.select((u) => u.current));
     ref.read(sprayProvider.notifier).addMoney(current);
   }
@@ -171,12 +179,16 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
                   horizontal: 24,
                   vertical: 12,
                 ),
-                alignment: Alignment.center,
+                alignment: const Alignment(0, 0.6),
                 child: BillStack(
                   denomination: current,
                   moneyImages: moneyImages,
                   onSpray: spray,
                   remaining: remaining,
+                  spraySpeed: double.tryParse(
+                        currentSpeed?.replaceAll('x', '') ?? '1.0',
+                      ) ??
+                      1.0,
                 ),
               ),
             ),
