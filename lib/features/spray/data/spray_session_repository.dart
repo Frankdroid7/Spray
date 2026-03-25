@@ -29,6 +29,19 @@ class SpraySessionRepository {
     return true;
   }
 
+  Future<void> endSession(String uid) async {
+    await _db.doc('users/$uid').set(
+      {'spraySessionActive': false},
+      SetOptions(merge: true),
+    );
+  }
+
+  Stream<bool> listenForSessionEnd(String receiverId) {
+    return _db.doc('users/$receiverId').snapshots().map((snap) {
+      return snap.data()?['spraySessionActive'] != true;
+    });
+  }
+
   Future<void> clearSpraySession(String uid) async {
     await _db.doc('users/$uid').update({
       'activeSprayCode': FieldValue.delete(),

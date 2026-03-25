@@ -7,7 +7,9 @@ import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/currency.dart';
 import 'package:spray/core/models/denomination.dart';
 import 'package:spray/core/widgets/primary_button.dart';
+import 'package:spray/features/authentication/view_models/auth_provider.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
+import 'package:spray/features/spray/data/spray_session_repository.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 import 'package:spray/features/spray/presentation/widgets/wallet.dart';
 import 'package:spray/router/app_router.gr.dart';
@@ -24,7 +26,7 @@ class ReceivingSprayPage extends ConsumerStatefulWidget {
 class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
   int total = 0;
   late double initialBalance;
-  Timer? sprayTimer, randomMoneyTimer;
+  Timer? sprayTimer; //, randomMoneyTimer;
 
   @override
   void initState() {
@@ -41,14 +43,14 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
       ref.read(sprayProvider.notifier).incrementDuration();
     });
 
-    randomMoneyTimer = Timer.periodic(const Duration(milliseconds: 250), (t) {
-      if (!mounted) {
-        t.cancel();
-        return;
-      }
-
-      ref.read(sprayProvider.notifier).addMoney(Denomination.twoHundredNaira);
-    });
+    // randomMoneyTimer = Timer.periodic(const Duration(milliseconds: 250), (t) {
+    //   if (!mounted) {
+    //     t.cancel();
+    //     return;
+    //   }
+    //
+    //   ref.read(sprayProvider.notifier).addMoney(Denomination.twoHundredNaira);
+    // });
 
     ref.listenManual(sprayProvider, (_, next) {
       total = 0;
@@ -66,7 +68,7 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
   @override
   void dispose() {
     sprayTimer?.cancel();
-    randomMoneyTimer?.cancel();
+    // randomMoneyTimer?.cancel();
     super.dispose();
   }
 
@@ -167,7 +169,12 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
               child: PrimaryButton(
                 onPressed: () {
                   sprayTimer?.cancel();
-                  randomMoneyTimer?.cancel();
+                  // randomMoneyTimer?.cancel();
+
+                  final uid = ref.read(authStateProvider).value?.uid;
+                  if (uid != null) {
+                    ref.read(spraySessionRepositoryProvider).endSession(uid);
+                  }
 
                   ref.read(homeProvider.notifier).addBalance(total.toDouble());
                   context.router.replace(const SpraySessionCompleteRoute());
