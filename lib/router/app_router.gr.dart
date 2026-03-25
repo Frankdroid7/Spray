@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i12;
+import 'package:flutter/material.dart' as _i13;
 import 'package:spray/features/authentication/presentation/views/login_screen.dart'
     as _i3;
 import 'package:spray/features/authentication/presentation/views/onboarding_screen.dart'
@@ -178,18 +179,52 @@ class SpraySomeoneRoute extends _i12.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.SprayerSessionPage]
-class SprayerSessionRoute extends _i12.PageRouteInfo<void> {
-  const SprayerSessionRoute({List<_i12.PageRouteInfo>? children})
-    : super(SprayerSessionRoute.name, initialChildren: children);
+class SprayerSessionRoute extends _i12.PageRouteInfo<SprayerSessionRouteArgs> {
+  SprayerSessionRoute({
+    _i13.Key? key,
+    required String receiverId,
+    List<_i12.PageRouteInfo>? children,
+  }) : super(
+         SprayerSessionRoute.name,
+         args: SprayerSessionRouteArgs(key: key, receiverId: receiverId),
+         initialChildren: children,
+       );
 
   static const String name = 'SprayerSessionRoute';
 
   static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i10.SprayerSessionPage();
+      final args = data.argsAs<SprayerSessionRouteArgs>();
+      return _i10.SprayerSessionPage(
+        key: args.key,
+        receiverId: args.receiverId,
+      );
     },
   );
+}
+
+class SprayerSessionRouteArgs {
+  const SprayerSessionRouteArgs({this.key, required this.receiverId});
+
+  final _i13.Key? key;
+
+  final String receiverId;
+
+  @override
+  String toString() {
+    return 'SprayerSessionRouteArgs{key: $key, receiverId: $receiverId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SprayerSessionRouteArgs) return false;
+    return key == other.key && receiverId == other.receiverId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ receiverId.hashCode;
 }
 
 /// generated route for

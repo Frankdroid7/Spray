@@ -9,8 +9,10 @@ import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/currency.dart';
 import 'package:spray/core/widgets/combobox.dart';
 import 'package:spray/core/widgets/primary_button.dart';
+import 'package:spray/core/models/transaction.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
 import 'package:spray/core/models/denomination.dart';
+import 'package:spray/features/spray/data/spray_session_repository.dart';
 import 'package:spray/features/spray/presentation/providers/spray_provider.dart';
 import 'package:spray/features/spray/presentation/widgets/bill_stack.dart';
 import 'package:spray/router/app_router.gr.dart';
@@ -18,7 +20,9 @@ import 'package:spray/theme/app_colors.dart';
 
 @RoutePage()
 class SprayerSessionPage extends ConsumerStatefulWidget {
-  const SprayerSessionPage({super.key});
+  final String receiverId;
+
+  const SprayerSessionPage({super.key, required this.receiverId});
 
   @override
   ConsumerState<SprayerSessionPage> createState() => _SprayerSessionPageState();
@@ -28,6 +32,8 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
   int total = 0, cap = 50_000;
   late double initialBalance;
   Timer? sprayTimer;
+  StreamSubscription<bool>? _sessionEndSub;
+  bool _sessionEnded = false;
 
   String? currentSpeed = "1.0x";
   final List<double> speeds = [0.5, 1.0, 1.5, 2.0];
@@ -39,6 +45,13 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
     super.initState();
 
     initialBalance = ref.read(homeProvider.select((async) => async.value?.balance ?? 0.0));
+
+    final repo = ref.read(spraySessionRepositoryProvider);
+    // _sessionEndSub = repo.listenForSessionEnd(widget.receiverId).listen((ended) {
+    //   if (ended && mounted && !_sessionEnded) {
+    //     _endSession();
+    //   }
+    // });
 
     sprayTimer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) {
@@ -62,9 +75,23 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
     });
   }
 
+  void _endSession() {
+    if (_sessionEnded) return;
+    _sessionEnded = true;
+    sprayTimer?.cancel();
+    _sessionEndSub?.cancel();
+    ref.read(homeProvider.notifier).addBalance(
+      -total.toDouble(),
+      type: TransactionType.debit,
+      narration: 'Spray session',
+    );
+    context.router.replace(const SpraySessionCompleteRoute());
+  }
+
   @override
   void dispose() {
     sprayTimer?.cancel();
+    _sessionEndSub?.cancel();
     super.dispose();
   }
 
@@ -248,13 +275,7 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
                   ),
                   const SizedBox(height: 20),
                   PrimaryButton(
-                    onPressed: () {
-                      sprayTimer?.cancel();
-                      ref
-                          .read(homeProvider.notifier)
-                          .addBalance(-total.toDouble());
-                      context.router.replace(const SpraySessionCompleteRoute());
-                    },
+                    onPressed: _endSession,
                     text: "Stop Session",
                     backgroundColor: AppColors.error,
                   ),
