@@ -47,9 +47,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _runAnimation() async {
     await controller.forward();
     await controller.reverse();
+
     if (!mounted) return;
 
-    final user = ref.read(authStateProvider).value;
+    final user = ref.read(authServiceProvider).currentUser;
     if (user != null) {
       context.router.replaceAll(const [HomeRoute()]);
     } else {

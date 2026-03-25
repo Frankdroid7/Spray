@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spray/features/authentication/view_models/auth_provider.dart';
 import 'package:spray/features/spray/data/user_repository.dart';
 import 'package:spray/features/spray/domain/entities/spray_receiver.dart';
 
@@ -42,8 +43,11 @@ class SearchReceiverNotifier extends Notifier<SearchReceiverState> {
 
   Future<void> _loadUsers() async {
     try {
+
       final repo = ref.read(userRepositoryProvider);
-      _allUsers = await repo.getAllUsers();
+      final currentUser = ref.read(authStateProvider).value;
+      final allUsers = await repo.getAllUsers();
+      _allUsers = allUsers.where((u) => u.id != currentUser?.uid).toList();
       state = state.copyWith(receivers: _allUsers, loading: false);
     } catch (e) {
       state = state.copyWith(error: e.toString(), loading: false);
