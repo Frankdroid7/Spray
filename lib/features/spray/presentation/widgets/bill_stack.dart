@@ -8,6 +8,7 @@ class BillStack extends StatefulWidget {
   final Map<Denomination, String> moneyImages;
   final VoidCallback onSpray;
   final int remaining;
+  final double spraySpeed;
 
   const BillStack({
     super.key,
@@ -15,6 +16,7 @@ class BillStack extends StatefulWidget {
     required this.moneyImages,
     required this.onSpray,
     required this.remaining,
+    this.spraySpeed = 1.0,
   });
 
   @override
@@ -34,12 +36,22 @@ class _BillStackState extends State<BillStack>
   Offset _dragDelta = Offset.zero;
   Offset _flyDirection = const Offset(0, -2.0);
 
+  /// Returns the animation duration scaled by spray speed.
+  /// Higher speed = shorter duration, lower speed = longer duration.
+  int get _animationMs => (500 / widget.spraySpeed).round();
+
+  /// Drag threshold scaled by speed — slower speed needs more drag.
+  double get _dragThreshold => 8 / widget.spraySpeed;
+
+  /// Velocity threshold scaled by speed.
+  double get _velocityThreshold => -200 / widget.spraySpeed;
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: Duration(milliseconds: _animationMs),
     );
 
     _curvedAnimation = CurvedAnimation(
@@ -65,6 +77,14 @@ class _BillStackState extends State<BillStack>
   }
 
   @override
+  void didUpdateWidget(covariant BillStack oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.spraySpeed != widget.spraySpeed) {
+      _controller.duration = Duration(milliseconds: _animationMs);
+    }
+  }
+
+  @override
   void dispose() {
     _curvedAnimation.dispose();
     _controller.dispose();
@@ -76,7 +96,7 @@ class _BillStackState extends State<BillStack>
     _dragDelta += details.delta;
 
     // Trigger spray once the user has dragged upward enough
-    if (_dragDelta.dy < -8) {
+    if (_dragDelta.dy < -_dragThreshold) {
       _triggerSpray();
     }
   }
@@ -84,7 +104,7 @@ class _BillStackState extends State<BillStack>
   void _onPanEnd(DragEndDetails details) {
     if (_isSwiping) return;
     final velocity = details.velocity.pixelsPerSecond;
-    if (velocity.dy < -200) {
+    if (velocity.dy < _velocityThreshold) {
       // Use velocity direction for the fly angle
       final dx = velocity.dx.clamp(-600.0, 600.0) / 600.0;
       _dragDelta = Offset(dx * 20, -20);
@@ -147,6 +167,13 @@ class _BillStackState extends State<BillStack>
                 animation: _curvedAnimation,
                 builder: (context, child) {
                   final progress = _curvedAnimation.value;
+
+                  // Fold effect: slight 3D perspective bend as the note flies
+                  final foldAngle = progress * 0.3; // max ~17 degrees
+                  final foldMatrix = Matrix4.identity()
+                    ..setEntry(3, 2, 0.002) // perspective
+                    ..rotateX(foldAngle);
+
                   return FractionalTranslation(
                     translation: Offset(
                       _flyDirection.dx * progress,
@@ -154,9 +181,13 @@ class _BillStackState extends State<BillStack>
                     ),
                     child: Opacity(
                       opacity: _fadeAnimation.value,
-                      child: Transform.translate(
-                        offset: Offset(0, -staticCount * stackSpacing),
-                        child: child,
+                      child: Transform(
+                        alignment: Alignment.bottomCenter,
+                        transform: foldMatrix,
+                        child: Transform.translate(
+                          offset: Offset(0, -staticCount * stackSpacing),
+                          child: child,
+                        ),
                       ),
                     ),
                   );
