@@ -33,18 +33,27 @@ class HomeNotifier extends AsyncNotifier<HomeState> {
   Future<HomeState> build() async {
     final user = ref.watch(authStateProvider).value;
     if (user == null) return const HomeState();
-    final result = await ref.read(walletRepositoryProvider).getWallet(user.uid);
 
-    HomeState homeState = HomeState(
+    final result = await ref.read(walletRepositoryProvider).getWallet(user.uid);
+    final initialState = HomeState(
       balance: result.balance,
       transactions: List<Transaction>.from(result.transactions),
     );
-    state =  AsyncData(HomeState(
-      balance: result.balance,
-      transactions: List<Transaction>.from(result.transactions),
-    ));
+    state = AsyncData(initialState);
 
-    return homeState;
+    final sub = ref
+        .read(walletRepositoryProvider)
+        .listenToBalance(user.uid)
+        .listen((newBalance) {
+      final current = state.value;
+      if (current != null) {
+        state = AsyncData(current.copyWith(balance: newBalance));
+      }
+    });
+
+    ref.onDispose(sub.cancel);
+
+    return initialState;
   }
 
   Future<void> addBalance(

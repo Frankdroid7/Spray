@@ -38,7 +38,7 @@ class _PreviewSprayReceiverInfoState
   }
 
   Future<void> _startSession() async {
-    
+
     if (digit.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter the 4-digit code")),

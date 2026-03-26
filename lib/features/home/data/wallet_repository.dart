@@ -20,6 +20,12 @@ class WalletRepository {
     );
   }
 
+  Stream<double> listenToBalance(String uid) {
+    return _db.doc('users/$uid').snapshots().map((snap) {
+      return (snap.data()?['balance'] as num?)?.toDouble() ?? 0.0;
+    });
+  }
+
   Future<void> updateBalance({
     required String uid,
     required double delta,

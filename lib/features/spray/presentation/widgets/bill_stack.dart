@@ -142,8 +142,7 @@ class _BillStackState extends State<BillStack>
                 ),
               ),
             // Top bill (animated on swipe)
-            if (count > 0)
-              AnimatedBuilder(
+            AnimatedBuilder(
                 animation: _curvedAnimation,
                 builder: (context, child) {
                   final progress = _curvedAnimation.value;
