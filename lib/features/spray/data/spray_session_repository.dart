@@ -42,10 +42,35 @@ class SpraySessionRepository {
     });
   }
 
+  Future<void> updateRunningTotal(String sprayeeUid, double amount, int denominationValue) async {
+    await _db.doc('users/$sprayeeUid').set(
+      {'currentSprayAmount': amount, 'lastDenominationValue': denominationValue},
+      SetOptions(merge: true),
+    );
+  }
+
+  Stream<double> listenToRunningTotal(String uid) {
+    return _db.doc('users/$uid').snapshots().map((snap) {
+      return (snap.data()?['currentSprayAmount'] as num?)?.toDouble() ?? 0.0;
+    });
+  }
+
+  Stream<int?> listenToLastDenomination(String uid) {
+    return _db.doc('users/$uid').snapshots().map((snap) {
+      return snap.data()?['lastDenominationValue'] as int?;
+    });
+  }
+
+  Stream<Map<String, dynamic>?> listenToSprayUpdates(String uid) {
+    return _db.doc('users/$uid').snapshots().map((snap) => snap.data());
+  }
+
   Future<void> clearSpraySession(String uid) async {
     await _db.doc('users/$uid').update({
       'activeSprayCode': FieldValue.delete(),
       'spraySessionActive': FieldValue.delete(),
+      'currentSprayAmount': FieldValue.delete(),
+      'lastDenominationValue': FieldValue.delete(),
     });
   }
 }

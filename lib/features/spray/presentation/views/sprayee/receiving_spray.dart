@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spray/core/extensions/app_extensions.dart';
 import 'package:spray/core/functions/currency.dart';
 import 'package:spray/core/models/denomination.dart';
+import 'package:spray/core/models/transaction.dart';
 import 'package:spray/core/widgets/primary_button.dart';
 import 'package:spray/features/authentication/view_models/auth_provider.dart';
 import 'package:spray/features/home/presentation/providers/home_provider.dart';
@@ -24,9 +25,13 @@ class ReceivingSprayPage extends ConsumerStatefulWidget {
 }
 
 class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
-  int total = 0;
+  double _runningTotal = 0.0;
   late double initialBalance;
-  Timer? sprayTimer; //, randomMoneyTimer;
+  Timer? sprayTimer;
+  StreamSubscription<Map<String, dynamic>?>? _spraySub;
+  StreamSubscription<bool>? _sessionEndSub;
+  bool _sessionEnded = false;
+  bool _sessionStartConfirmed = false;
 
   @override
   void initState() {
@@ -39,43 +44,68 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
         t.cancel();
         return;
       }
-
       ref.read(sprayProvider.notifier).incrementDuration();
     });
 
-    // randomMoneyTimer = Timer.periodic(const Duration(milliseconds: 250), (t) {
-    //   if (!mounted) {
-    //     t.cancel();
-    //     return;
-    //   }
-    //
-    //   ref.read(sprayProvider.notifier).addMoney(Denomination.twoHundredNaira);
-    // });
+    final uid = ref.read(authStateProvider).value?.uid;
+    if (uid != null) {
+      final repo = ref.read(spraySessionRepositoryProvider);
 
-    ref.listenManual(sprayProvider, (_, next) {
-      total = 0;
-      Map<Denomination, int> monies = ref.watch(
-        sprayProvider.select((u) => u.monies),
-      );
-      for (Denomination key in monies.keys) {
-        total += monies[key]! * key.value;
-      }
+      _spraySub = repo.listenToSprayUpdates(uid).listen((data) {
+        final amount = (data?['currentSprayAmount'] as num?)?.toDouble() ?? 0.0;
+        final denomValue = data?['lastDenominationValue'] as int?;
 
-      setState(() {});
-    });
+        if (amount > _runningTotal && denomValue != null) {
+          final denomination = Denomination.values.firstWhere(
+            (d) => d.value == denomValue,
+            orElse: () => Denomination.twoHundredNaira,
+          );
+          ref.read(sprayProvider.notifier).addMoney(denomination);
+        }
+
+        if (mounted) setState(() => _runningTotal = amount);
+      });
+
+      _sessionEndSub = repo.listenForSessionEnd(uid).listen((ended) {
+        if (!ended) {
+          _sessionStartConfirmed = true;
+          return;
+        }
+        if (_sessionStartConfirmed && mounted && !_sessionEnded) _onSessionEnd();
+      });
+    }
+  }
+
+  void _onSessionEnd() {
+    if (_sessionEnded) return;
+    _sessionEnded = true;
+    _cleanup();
+    final uid = ref.read(authStateProvider).value?.uid;
+    if (uid != null) {
+      ref.read(spraySessionRepositoryProvider).clearSpraySession(uid);
+    }
+    ref.read(homeProvider.notifier).addBalance(
+      _runningTotal,
+      type: TransactionType.credit,
+      narration: 'Spray session',
+    );
+    context.router.replace(const SpraySessionCompleteRoute());
+  }
+
+  void _cleanup() {
+    sprayTimer?.cancel();
+    _spraySub?.cancel();
+    _sessionEndSub?.cancel();
   }
 
   @override
   void dispose() {
-    sprayTimer?.cancel();
-    // randomMoneyTimer?.cancel();
+    _cleanup();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Denomination current = ref.watch(sprayProvider.select((u) => u.current));
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -84,7 +114,7 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
           children: [
             const SizedBox(height: 24),
             Text(
-              "₦${formatCurrency(total)}",
+              "₦${formatCurrency(_runningTotal.toInt())}",
               style: context.textTheme.displaySmall?.copyWith(
                 color: AppColors.success,
                 fontWeight: FontWeight.bold,
@@ -106,7 +136,7 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
                 text: "Balance: ",
                 children: [
                   TextSpan(
-                    text: "₦${formatCurrency(total + initialBalance)}",
+                    text: "₦${formatCurrency(_runningTotal + initialBalance)}",
                     style: TextStyle(color: AppColors.brandPrimary),
                   ),
                 ],
@@ -168,15 +198,18 @@ class _ReceivingSprayPageState extends ConsumerState<ReceivingSprayPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: PrimaryButton(
                 onPressed: () {
-                  sprayTimer?.cancel();
-                  // randomMoneyTimer?.cancel();
-
+                  if (_sessionEnded) return;
+                  _sessionEnded = true;
+                  _cleanup();
                   final uid = ref.read(authStateProvider).value?.uid;
                   if (uid != null) {
-                    ref.read(spraySessionRepositoryProvider).endSession(uid);
+                    ref.read(spraySessionRepositoryProvider).clearSpraySession(uid);
                   }
-
-                  ref.read(homeProvider.notifier).addBalance(total.toDouble());
+                  ref.read(homeProvider.notifier).addBalance(
+                    _runningTotal,
+                    type: TransactionType.credit,
+                    narration: 'Spray session',
+                  );
                   context.router.replace(const SpraySessionCompleteRoute());
                 },
                 text: "End Session",

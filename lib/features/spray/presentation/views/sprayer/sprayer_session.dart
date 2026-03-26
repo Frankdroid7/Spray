@@ -47,11 +47,11 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
     initialBalance = ref.read(homeProvider.select((async) => async.value?.balance ?? 0.0));
 
     final repo = ref.read(spraySessionRepositoryProvider);
-    // _sessionEndSub = repo.listenForSessionEnd(widget.receiverId).listen((ended) {
-    //   if (ended && mounted && !_sessionEnded) {
-    //     _endSession();
-    //   }
-    // });
+    _sessionEndSub = repo.listenForSessionEnd(widget.receiverId).listen((ended) {
+      if (ended && mounted && !_sessionEnded) {
+        _endSession();
+      }
+    });
 
     sprayTimer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) {
@@ -102,9 +102,18 @@ class _SprayerSessionPageState extends ConsumerState<SprayerSessionPage> {
   }
 
   void spray() {
-    if (remaining <= 0) return;
     Denomination current = ref.read(sprayProvider.select((u) => u.current));
+    if (remaining < current.value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Balance too low')),
+      );
+      return;
+    }
     ref.read(sprayProvider.notifier).addMoney(current);
+    unawaited(
+      ref.read(spraySessionRepositoryProvider)
+          .updateRunningTotal(widget.receiverId, total.toDouble(), current.value),
+    );
   }
 
   @override
